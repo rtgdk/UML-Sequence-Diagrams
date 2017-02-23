@@ -1,9 +1,11 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+import javax.swing.JTextArea;
 class Line
 {
     private int lineno;
@@ -95,23 +97,25 @@ class LineFile
 {
     private ArrayList<Line> lines = new ArrayList<Line>();
    
-    public void makeLines()
+    public void makeLines(File f)
     {
         int count = 0;
         BufferedReader br;
         try {
-            br = new BufferedReader(new FileReader("file.txt"));
+            br = new BufferedReader(new FileReader(f));
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             System.out.println("File not found");
             return;
         }
+        System.out.println("Fileherehererere");
         try
         {
             String sentn, s1;
             while ((sentn = br.readLine()) != null)
             {
-                s1 = sentn.toUpperCase();
+                //textArea.append(sentn+"\n");
+            	s1 = sentn.toUpperCase();
                 Line x = new Line();
                 x.setLineno(count);
                 x.setLine_descrip(s1);
@@ -132,7 +136,103 @@ class LineFile
             }
         }
     }
-   
+    public void dispLines(File f, JTextArea textArea)
+    {
+        BufferedReader br;
+        try {
+            br = new BufferedReader(new FileReader(f));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            System.out.println("File not found");
+            return;
+        }
+        try
+        {
+            String sentn;
+            while ((sentn = br.readLine()) != null)
+            {
+                textArea.append(sentn+"\n");
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        finally
+        {
+            try {
+                br.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+    public void errorCheck(JTextArea textArea)
+    {
+    	Iterator<Line> itr = lines.iterator();
+    	Stack<String> ifstack = new Stack<String>();
+		Stack<String> whilestack=new Stack<String>();
+		int check = 0;
+    	String line;
+    	while(itr.hasNext()){
+			line = itr.next().getLine_descrip();
+			if(line.contains("IF")&&!line.contains("END"))
+			{
+				ifstack.push("if");
+				}
+			if(line.contains("WHILE")&&!line.contains("END"))
+			{
+				whilestack.push("while");
+			}
+			if(line.contains("ENDIF"))
+			{
+				if(ifstack.empty())
+				{
+					textArea.append("EndIf without If in line\n");
+					check=1;
+				}
+				else
+				 ifstack.pop();
+			}
+			if(line.contains("ENDWHILE"))
+			{
+				if(whilestack.empty())
+				{
+					textArea.append("EndWhile without While in line\n");
+					check=1;
+				}
+				else
+				whilestack.pop();
+			}
+			if(line.contains("ELSE"))
+			{
+			    if(ifstack.empty())
+			    {
+			    	textArea.append("Else Without If in line\n");
+			    	check=1;
+			    }
+			}
+			if(line.contains("THEN")&&(!(line.contains("IF"))))
+			{
+				textArea.append("Then without If in line\n");
+				check=1;
+			}
+		}
+		if(!ifstack.empty())
+		{
+			textArea.append("Unclosed If \n");
+			check=1;
+		}
+		if(!whilestack.empty())
+		{
+			textArea.append("Unclosed While \n");
+			check=1;
+		}
+		else if(check==0)
+		{
+			textArea.append("No errors \n");
+		}
+    }
     public ArrayList<Line> getLines() {
         return lines;
     }
@@ -142,12 +242,49 @@ class LineFile
         this.lines = lines;
     }
 }
-   
+
+class Table1
+{
+	private String actiono;
+	private int lineno;
+	private String actionname;
+	static int count=0;
+	Table1(int lineno2,String actionname2,int flag){
+		this.setLineno(lineno2);
+		this.setActioname(actionname2);
+		if(flag==1){
+			actiono = "A"+count;
+			count++;
+		}
+		else{
+			actiono="";
+		}
+	}
+	public String getActiono() {
+		return actiono;
+	}
+	public void setActiono(String actiono) {
+		this.actiono = actiono;
+	}
+	public int getLineno() {
+		return lineno;
+	}
+	public void setLineno(int lineno) {
+		this.lineno = lineno;
+	}
+	public String getActioname() {
+		return actionname;
+	}
+	public void setActioname(String actionname) {
+		this.actionname = actionname;
+	}
+	
+}
 
 public class Flow
 {
    
-    public static void main(String args[])
+    /*public static void main(String args[])
     {
         Scanner sc = new Scanner(System.in);
         ArrayList<Integer> whileSet = new ArrayList<Integer>();
@@ -155,6 +292,7 @@ public class Flow
         LineFile l1 = new LineFile();
         int i;
         Node startNode;
+        //
         l1.makeLines();
         Flow f = new Flow();
         startNode = f.createUseCaseGraph(l1.getLines(), whileSet);
@@ -168,8 +306,8 @@ public class Flow
  
         str = f.generateScenarios2(startNode, lpkount, whileSet);
         f.print(str,startNode);
-    }
-    public Node createUseCaseGraph(ArrayList<Line> linf, ArrayList<Integer> whileSet) {
+    }**/
+    public Node createUseCaseGraph(ArrayList<Line> linf, ArrayList<Integer> whileSet, ArrayList<Table1> table1array) {
         Node startNode = new Node(0,"Start",0);
         Node endNode = new Node(1000,"Start",20);
         endNode.setTrue_part(null);
@@ -178,6 +316,7 @@ public class Flow
         Stack<Node> ifstack = new Stack<Node>();
         Stack<Node> whilestack = new Stack<Node>();
         Stack<Node> lastvisitstack = new Stack<Node>();
+        Table1 table1;
         while (li.hasNext()){
             Line ln = li.next();
             if (ln.getLine_descrip().startsWith("IF")) {
@@ -185,12 +324,18 @@ public class Flow
                 ifstack.push(n);
                 currentNode.setTrue_part(n);
                 currentNode = n;
+                table1= new Table1(ln.getLineno(),"IF",1);
+                table1array.add(table1);
+                
             }
             else if (ln.getLine_descrip().startsWith("ELSE")) {
                 Node n = new Node(ln.getLineno(),ln.getLine_descrip(),3);
                 if (!ifstack.isEmpty()){
                     ifstack.pop().setElse_part(n);
+                    table1= new Table1(ln.getLineno(),"ELSE",0);
+                    table1array.add(table1);
                 }
+                
                 else {
                     System.out.print("Error1");
                 }
@@ -201,7 +346,9 @@ public class Flow
                 Node n = new Node(ln.getLineno(),ln.getLine_descrip(),4);
                 currentNode.setTrue_part(n);
                 if (!lastvisitstack.isEmpty()){
-                lastvisitstack.pop().setTrue_part(n);           
+                lastvisitstack.pop().setTrue_part(n); 
+                table1= new Table1(ln.getLineno(),"ENDIF",0);
+                table1array.add(table1);
                 }
                 else {
                     System.out.print("Error2");
@@ -215,6 +362,9 @@ public class Flow
                 currentNode.setTrue_part(n);
                 currentNode = n;
                 whileSet.add(ln.getLineno()+1);
+                System.out.printf("here while \n");
+                table1= new Table1(ln.getLineno(),"WHILE",1);
+                table1array.add(table1);
             }
             else if (ln.getLine_descrip().startsWith("ENDWHILE")) {
                 Node n = new Node(ln.getLineno(),ln.getLine_descrip(),6);
@@ -223,6 +373,8 @@ public class Flow
                     w.setElse_part(n);
                     currentNode.setTrue_part(w);
                     currentNode = n;
+                    table1= new Table1(ln.getLineno(),"ENDWHILE",0);
+                    table1array.add(table1);
                 }
                 else {
                     System.out.print("Error4");
@@ -235,6 +387,8 @@ public class Flow
                     currentNode.setTrue_part(n);
                     currentNode = n;
                     n.setTrue_part(endNode);
+                    table1= new Table1(ln.getLineno(),"END",1);
+                    table1array.add(table1);
                 }
                 else {
                     System.out.print("Error5");
@@ -250,11 +404,15 @@ public class Flow
                 else {
                     currentNode.setTrue_part(endNode);
                 }
+                table1= new Table1(ln.getLineno(),"EXIT",1);
+                table1array.add(table1);
             }
             else {
                 Node n = new Node(ln.getLineno(),ln.getLine_descrip(),1);
                 currentNode.setTrue_part(n);
                 currentNode = n;
+                table1= new Table1(ln.getLineno(),ln.getLine_descrip(),1);
+                table1array.add(table1);
             }
         }
         /*Iterator<String> itr = whileSet.iterator();
@@ -262,6 +420,7 @@ public class Flow
         {
             System.out.println(itr.next());
         }**/
+        System.out.println("1THIS-> "+startNode);
         return startNode;
     }
     public void print(ArrayList<String> str,Node start)
@@ -338,11 +497,13 @@ public class Flow
     public ArrayList<String> generateScenarios2(Node startNode, ArrayList<Integer> lpkount, ArrayList<Integer> whileSet)
     {
         String scenario = "";
+        int temp2 = -1;
         Node cNode = startNode.getTrue_part();
         Stack<Node> newStack = new Stack<Node>();
         Stack<String> scenarioStack = new Stack<String>();
         ArrayList<String> scenarioList = new ArrayList<String>();
-       
+        Stack<Integer> iflist = new Stack<Integer>();
+        Stack<Integer> indexlist = new Stack<Integer>();
         while(true)
         {
             switch(cNode.getType())
@@ -351,12 +512,17 @@ public class Flow
                         cNode = cNode.getTrue_part();
                         break;
                 case 2: scenarioStack.push(scenario + cNode.getNode_no() +"(F),");
+                        if (temp2!=-1){
+                            iflist.push(lpkount.get(temp2));
+                            indexlist.push(temp2);
+                        }
                         scenario = scenario+ cNode.getNode_no()+"(T),";
                         newStack.push(cNode);
                         cNode = cNode.getTrue_part();
                         break;
                 case 5:   
                         int i = whileSet.indexOf(cNode.getNode_no());
+                        temp2 = i;
                         if(newStack.search(cNode) == -1)            //Node not there
                         {
                             scenarioStack.push(scenario + cNode.getNode_no() +"(F),");
@@ -389,6 +555,9 @@ public class Flow
                             scenario = scenarioStack.pop();
                             Node temp = newStack.pop();
                             cNode = temp.getElse_part();
+                            if(!indexlist.isEmpty())
+                                lpkount.set(indexlist.pop(), iflist.pop());
+                           
                         }
             }
         }
