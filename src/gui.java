@@ -17,6 +17,8 @@ public class gui extends JPanel{
 	private JButton jcomp5;
 	private JButton jcomp7;
 	Object[][] obj;
+	Object[][] obj2;
+	Object[] columnobj;
 	private JLabel jcomp6;
 	private JTextArea jcomp8;
 	private JButton jcomp9;
@@ -32,6 +34,8 @@ public class gui extends JPanel{
 	static String sg[]=new String[1000];
 	String pc[]=new String[1000];
 	int count=0;
+	int countcol=0;
+	
 	String sloop[]=new String[100];
 	int cloop=0;
 	String gnrits[]=new String[1000];
@@ -43,6 +47,7 @@ public class gui extends JPanel{
 	File f ;
 	Node startNode;
 	ArrayList<Table1> table1array ;
+	ArrayList<Table2> table2array ;
 	ArrayList<String> doorarray = new ArrayList<String>();
 	//String test11= JOptionPane.showInputDialog("Enter directory containing files");
 	//File folder = new File(test11);
@@ -201,6 +206,25 @@ public class gui extends JPanel{
 					}
 	    		  } 
 	    		} );
+	    jcomp4.addActionListener(new ActionListener() { 
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		    try {
+	    		    	selectionButtonPressed5();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+	    		  } 
+	    		} );
+	}
+	public void selectionButtonPressed5(){
+		removeAll();
+		revalidate();
+		repaint();
+		add (jcomp1);
+	    add (jcomp2);
+	    add (jcomp3);
+	    add (jcomp4);
+	    add (jcomp5);
 	}
 	public void selectionButtonPressed4(){
 		removeAll();
@@ -241,29 +265,20 @@ public class gui extends JPanel{
 		jcomp19_4.setBounds(550,100,80,20);	
 		JLabel loops = new JLabel("No. of Loops");
 		loops.setBounds(450,200,100,20);
+		
 		Object[] columnNames = {"S No.",
 		        "Loop Action",
 		        "Loop Line No.",
 		        "No."};
-		Object[][] data = {
-			    {"Kathy", "Smith",
-			     "Snowboarding", new Integer(5)},
-			    {"John", "Doe",
-			     "Rowing", new Integer(3)},
-			    {"Sue", "Black",
-			     "Knitting", new Integer(2)},
-			    {"Jane", "White",
-			     "Speed reading", new Integer(20)},
-			    {"Joe", "Brown",
-			     "Pool", new Integer(10)}
-			};
+		obj2 = convertTable2Array();
+		Object[][] data = obj2;
 		JTable table = new JTable(data,columnNames);
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(10,250,900,300);
-		add(scrollPane);
-		JLabel oklabel = new JLabel("OK");
-		oklabel.setBounds(10,600,50,20);
-		oklabel.setForeground(Color.red);
+		//add(scrollPane);
+		JButton okbutton = new JButton("OK");
+		okbutton.setBounds(10,600,100,25);
+		okbutton.setForeground(Color.red);
 		generatebutton.setBounds(350,150,270,20);
 		jcomp199.setBounds(400,40,800,15);
 		jcomp19.setBounds(300,75,80,30);
@@ -276,7 +291,7 @@ public class gui extends JPanel{
 		proceed2.setEnabled(false);
 		add(loops);
 		add(proceed2);
-		add(oklabel);
+		add(okbutton);
 		add(generatebutton);
 		add(jcomp199);
 		add(jcomp19);
@@ -304,6 +319,27 @@ public class gui extends JPanel{
 	    add(j4);
 	    add(j6);
 	    add(j5);
+	    generatebutton.addActionListener(new ActionListener() { 
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		  add(scrollPane);
+	    		  
+	    		  } 
+	    		} );
+	    okbutton.addActionListener(new ActionListener() { 
+	    	  public void actionPerformed(ActionEvent e) {    
+	    		  okbutton.setForeground(Color.green);
+	    		   proceed2.setEnabled(true);
+	    		  } 
+	    		} );
+	    proceed2.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent evt) 
+	       {
+	    
+	        	selectionButtonPressed5();
+	        	//table_1.set = new JTable(obj, columnNames);
+	       }
+		});
 	}
 	
                 
@@ -335,14 +371,15 @@ public class gui extends JPanel{
 	    j3.setBounds(280, 80, 400, 40);
 	    j3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 	    j3.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    Object[] columnNames = {"Action No",
-                "Line No",
-                "Action Name",
-                "Door"
-             };
+	   
+	    Object[] columnNames = new Object[countcol];
+	    for (int i=0;i<countcol;i++){
+	    	columnNames[i]=columnobj[i];
+	    }
 	    Object[][] data = obj;
 	    JTable table = new JTable(data,columnNames);
 	    TableColumn sportColumn = table.getColumnModel().getColumn(3);
+	    TableColumn sportColumn2 = table.getColumnModel().getColumn(4);
 	    JComboBox comboBox = new JComboBox();
 	    System.out.println(doorarray.get(0));
 	    for (int i=0;i<doorarray.size();i++){
@@ -354,6 +391,16 @@ public class gui extends JPanel{
 	    comboBox.setSelectedIndex(2);
 	    sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
 	    //comboBox.setSelectedIndex(0);
+	    JComboBox comboBox2 = new JComboBox();
+	    System.out.println(doorarray.get(0));
+	    for (int i=0;i<doorarray.size();i++){
+	    	comboBox2.addItem(doorarray.get(i));
+	    	//comboBox.setSelectedIndex(0);
+	    }
+	    System.out.println(comboBox2.getSelectedIndex()+comboBox2.getSelectedItem().toString());
+	    //comboBox.setSelectedIndex(0);
+	    comboBox2.setSelectedIndex(2);
+	    sportColumn2.setCellEditor(new DefaultCellEditor(comboBox2));
 	    JScrollPane scrollPane = new JScrollPane(table);
 	    //comboBox.setSelectedIndex(0);
 	    scrollPane.setBounds(10,100,900,400);
@@ -432,6 +479,15 @@ public class gui extends JPanel{
 	    		    proceed2.setEnabled(true);
 	    		  } 
 	    		} );
+	    proceed2.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent evt) 
+	       {
+	    
+	        	selectionButtonPressed4();
+	        	//table_1.set = new JTable(obj, columnNames);
+	       }
+		});
 	    //add(j7);
 	    //add(j8);
 	    //jcomp16.append((aname[count-1]));
@@ -496,6 +552,11 @@ public class gui extends JPanel{
 	    	}
 	    public void listFilesForFolder(File folder, JTextArea textArea_2, JTextPane okTxt, JButton btnProceed) 
 		{
+	    	columnobj = new Object[10];
+	    	columnobj[0] = "Action No";
+	    	columnobj[1] =  "Line No";
+	    	columnobj[2] = "Action Name";
+	    	countcol = 3;
 		    for (final File fileEntry : folder.listFiles()) 
 		    {
 		        if (fileEntry.isDirectory()) 
@@ -513,11 +574,14 @@ public class gui extends JPanel{
 		    btnProceed.setEnabled(true);
 		}
 	    public void dispFileContents(File file, JTextArea textArea)
-		{
+		{	
+	    	
 			 try 
 			 {
 				 BufferedReader br = new BufferedReader(new FileReader (file));
 				 String         line = null;
+				 columnobj[countcol] = file.getName();
+				 countcol++;
 				 try {
 					while ((line = br.readLine()) != null)
 					    {
@@ -546,17 +610,32 @@ public class gui extends JPanel{
 	        l1.makeLines(f);
 	        Flow flow = new Flow();
 	        startNode = createUseCaseGraph(l1.getLines(), whileSet);
-	        System.out.printf(table1array.get(0).getActioname());
+	        System.out.println(table1array.get(0).getActioname());
+	        System.out.println(table2array.get(0).getLineaction()+"hurray");
 	     }
 	    public Object[][] convertTable1Array(){
 			int len = table1array.size();
-			Object[][] obj = new Object[len][4];
+			Object[][] obj = new Object[len][5];
 			int i=0;
 			for (i=0;i<len;i++){
 				System.out.printf(table1array.get(i).getActiono());
 				obj[i][0]= table1array.get(i).getActiono();
 				obj[i][1]= table1array.get(i).getLineno();
 				obj[i][2]= table1array.get(i).getActioname();
+				obj[i][3]= null;
+				obj[i][4]= null;
+			}
+			return obj;
+		}
+	    public Object[][] convertTable2Array(){
+			int len = table2array.size();
+			Object[][] obj = new Object[len][5];
+			int i=0;
+			for (i=0;i<len;i++){
+				System.out.println(table2array.get(i).getLineno());
+				obj[i][0]= table2array.get(i).getSno();
+				obj[i][1]= table2array.get(i).getLineaction();
+				obj[i][2]= table2array.get(i).getLineno();
 				obj[i][3]= null;
 			}
 			return obj;
@@ -571,7 +650,9 @@ public class gui extends JPanel{
 	        Stack<Node> whilestack = new Stack<Node>();
 	        Stack<Node> lastvisitstack = new Stack<Node>();
 	        Table1 table1;
+	        Table2 table2;
 	        table1array = new ArrayList<Table1>();
+	        table2array = new ArrayList<Table2>();
 	        while (li.hasNext()){
 	            Line ln = li.next();
 	            if (ln.getLine_descrip().startsWith("IF")) {
@@ -620,6 +701,8 @@ public class gui extends JPanel{
 	                System.out.printf("here while \n");
 	                table1= new Table1(ln.getLineno(),"WHILE",1);
 	                table1array.add(table1);
+	                table2 = new Table2(ln.getLineno()+1,ln.getLine_descrip());
+	                table2array.add(table2);
 	            }
 	            else if (ln.getLine_descrip().startsWith("ENDWHILE")) {
 	                Node n = new Node(ln.getLineno(),ln.getLine_descrip(),6);

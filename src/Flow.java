@@ -281,6 +281,38 @@ class Table1
 	
 }
 
+class Table2{
+	static int count=1;
+	private int sno;
+	private int lineno;
+	private String lineaction;
+	Table2(int lineno2,String lineaction2){
+		this.lineno=lineno2;
+		this.lineaction=lineaction2;
+		this.sno=count;
+		count++;
+	}
+	public int getLineno() {
+		return lineno;
+	}
+	public void setLineno(int lineno) {
+		this.lineno = lineno;
+	}
+	public String getLineaction() {
+		return lineaction;
+	}
+	public void setLineaction(String lineaction) {
+		this.lineaction = lineaction;
+	}
+	public int getSno() {
+		return sno;
+	}
+	public void setSno(int sno) {
+		this.sno = sno;
+	}
+	
+}
+
 public class Flow
 {
    
