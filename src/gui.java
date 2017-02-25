@@ -18,6 +18,7 @@ public class gui extends JPanel{
 	private JButton jcomp7;
 	Object[][] obj;
 	Object[][] obj2;
+	Object[][] obj3;
 	Object[] columnobj;
 	private JLabel jcomp6;
 	private JTextArea jcomp8;
@@ -48,7 +49,11 @@ public class gui extends JPanel{
 	Node startNode;
 	ArrayList<Table1> table1array ;
 	ArrayList<Table2> table2array ;
-	ArrayList<String> doorarray = new ArrayList<String>();
+	ArrayList<ArrayList<String>> doorarray = new ArrayList<ArrayList<String>>();
+	JTable table2;
+	//JTextArea table2text = new JTextArea();
+	ArrayList<Integer> whileSet;
+	ArrayList<String> scenarioList = new ArrayList<String>();
 	//String test11= JOptionPane.showInputDialog("Enter directory containing files");
 	//File folder = new File(test11);
 	//File[] listOfFiles = folder.listFiles();
@@ -117,11 +122,14 @@ public class gui extends JPanel{
 	            }
 	        }
 	    });
+	    JButton btnCompButton = new JButton("Browse");
+	    btnCompButton.setEnabled(false);
 	    checkformat.addActionListener(new ActionListener() { 
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		    try {
 	    		    	jcomp8.append("\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 	    		    	l1.errorCheck(jcomp8);
+	    		    	btnCompButton.setEnabled(true);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -142,9 +150,12 @@ public class gui extends JPanel{
 	    jcomp19_3.setBounds(550,75,80,20);
 	    jcomp19_4=new JTextArea();
 		jcomp19_4.setBounds(550,100,80,20);
-		JButton btnCompButton = new JButton("Browse");
+		
+		JLabel complabel = new JLabel("Select Component Files");
 		btnCompButton.setBounds(650, 400, 100, 25);
+		complabel.setBounds(500, 400, 150, 25);
 		add(btnCompButton);
+		add(complabel);
 		JTextPane OkTxt = new JTextPane();
 		btnCompButton.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent evt) {
@@ -215,6 +226,25 @@ public class gui extends JPanel{
 					}
 	    		  } 
 	    		} );
+	    jcomp5.addActionListener(new ActionListener() { 
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		    try {
+	    		    	selectionButtonPressed6();
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+	    		  } 
+	    		} );
+	}
+	public void selectionButtonPressed6(){
+		removeAll();
+		revalidate();
+		repaint();
+		add (jcomp1);
+	    add (jcomp2);
+	    add (jcomp3);
+	    add (jcomp4);
+	    add (jcomp5);
 	}
 	public void selectionButtonPressed5(){
 		removeAll();
@@ -225,6 +255,73 @@ public class gui extends JPanel{
 	    add (jcomp3);
 	    add (jcomp4);
 	    add (jcomp5);
+	    jcomp1.setBackground(null);
+	    JTextArea jcomp13=new JTextArea();
+		JTextArea jcomp14=new JTextArea();
+		JTextArea jcomp15=new JTextArea();
+		jcomp15.setEditable(false);
+		JScrollPane j1=new JScrollPane(jcomp13);
+		JScrollPane j2=new JScrollPane(jcomp14);
+		JScrollPane j3=new JScrollPane(jcomp15);
+		j1.setBounds(50, 80, 80, 40);
+	    j1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    j1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    j2.setBounds(130, 80, 150, 40);
+	    j2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    j2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    j3.setBounds(280, 80, 400, 40);
+	    j3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    j3.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    
+	    JLabel title = new JLabel("Scenarios");
+	    title.setBounds(500, 50, 100, 25);
+	    add(title);
+	    Object[] columnNames = {"S.no","Scenarios"};
+	    obj3 = convertTable3Array();
+	    
+		Object[][] data = obj3;
+		table2 = new JTable(data,columnNames);
+		JScrollPane scrollPane = new JScrollPane(table2);
+		scrollPane.setBounds(50,100,900,500);
+		add(scrollPane);
+		
+		JButton proceed3 = new JButton("Proceed");
+		proceed3.setBounds(700, 650, 100, 25);
+		proceed3.setEnabled(true);
+		add(proceed3);
+		
+		
+		
+	    JTextArea jcomp16=new JTextArea();
+		JTextArea jcomp17=new JTextArea();
+		JTextArea jcomp18=new JTextArea();
+		
+		JScrollPane j4=new JScrollPane(jcomp16);
+		JScrollPane j5=new JScrollPane(jcomp17);
+		JScrollPane j6=new JScrollPane(jcomp18);
+		//j4.setBounds(50, 80+(linecount*40), 80, 40);
+	    j4.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    j4.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    //j5.setBounds(130, 80+(linecount*40), 150, 40);
+	    j5.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    j5.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    //j6.setBounds(280, 80+(linecount*40), 400, 40);
+	    j6.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    j6.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+	    add(j4);
+	    add(j6);
+	    add(j5);
+	    proceed3.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent evt) 
+	       {
+				//table2text.setText(table2.getModel().getValueAt(0,3).toString());
+				
+	        	selectionButtonPressed6();
+	        	//table_1.set = new JTable(obj, columnNames);
+	       }
+		});
 	}
 	public void selectionButtonPressed4(){
 		removeAll();
@@ -272,8 +369,8 @@ public class gui extends JPanel{
 		        "No."};
 		obj2 = convertTable2Array();
 		Object[][] data = obj2;
-		JTable table = new JTable(data,columnNames);
-		JScrollPane scrollPane = new JScrollPane(table);
+		table2 = new JTable(data,columnNames);
+		JScrollPane scrollPane = new JScrollPane(table2);
 		scrollPane.setBounds(10,250,900,300);
 		//add(scrollPane);
 		JButton okbutton = new JButton("OK");
@@ -335,7 +432,13 @@ public class gui extends JPanel{
 		{
 			public void actionPerformed(ActionEvent evt) 
 	       {
-	    
+				ArrayList<Integer> lpkount = new ArrayList<Integer>(); 
+				for(int i = 0; i < whileSet.size(); i++)
+		        {
+		            lpkount.add(Integer.parseInt(table2.getModel().getValueAt(i,3).toString()));
+		        }
+				generateScenarios2(startNode,lpkount,whileSet);
+				System.out.println("DOne till here");
 	        	selectionButtonPressed5();
 	        	//table_1.set = new JTable(obj, columnNames);
 	       }
@@ -381,25 +484,25 @@ public class gui extends JPanel{
 	    TableColumn sportColumn = table.getColumnModel().getColumn(3);
 	    TableColumn sportColumn2 = table.getColumnModel().getColumn(4);
 	    JComboBox comboBox = new JComboBox();
-	    System.out.println(doorarray.get(0));
-	    for (int i=0;i<doorarray.size();i++){
-	    	comboBox.addItem(doorarray.get(i));
+	    System.out.println(doorarray.get(0).get(0));
+	    for (int i=0;i<doorarray.get(0).size();i++){
+	    	comboBox.addItem(doorarray.get(0).get(i));
 	    	//comboBox.setSelectedIndex(0);
 	    }
 	    System.out.println(comboBox.getSelectedIndex()+comboBox.getSelectedItem().toString());
-	    //comboBox.setSelectedIndex(0);
-	    comboBox.setSelectedIndex(2);
+	    comboBox.setSelectedIndex(0);
+	   // comboBox.setSelectedIndex(0);
 	    sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
 	    //comboBox.setSelectedIndex(0);
 	    JComboBox comboBox2 = new JComboBox();
-	    System.out.println(doorarray.get(0));
-	    for (int i=0;i<doorarray.size();i++){
-	    	comboBox2.addItem(doorarray.get(i));
+	    System.out.println(doorarray.get(1).get(0));
+	    for (int i=0;i<doorarray.get(1).size();i++){
+	    	comboBox2.addItem(doorarray.get(1).get(i));
 	    	//comboBox.setSelectedIndex(0);
 	    }
 	    System.out.println(comboBox2.getSelectedIndex()+comboBox2.getSelectedItem().toString());
-	    //comboBox.setSelectedIndex(0);
-	    comboBox2.setSelectedIndex(2);
+	    comboBox.setSelectedIndex(0);
+	    //comboBox2.setSelectedIndex(2);
 	    sportColumn2.setCellEditor(new DefaultCellEditor(comboBox2));
 	    JScrollPane scrollPane = new JScrollPane(table);
 	    //comboBox.setSelectedIndex(0);
@@ -477,6 +580,7 @@ public class gui extends JPanel{
 	    		    thread.stop();
 	    		    oklabel.setForeground(Color.green);
 	    		    proceed2.setEnabled(true);
+	    		    timertext2.setText(timertext.getText());
 	    		  } 
 	    		} );
 	    proceed2.addActionListener(new ActionListener() 
@@ -583,11 +687,13 @@ public class gui extends JPanel{
 				 columnobj[countcol] = file.getName();
 				 countcol++;
 				 try {
+					 ArrayList<String> l = new ArrayList<String>();
 					while ((line = br.readLine()) != null)
 					    {
 					        textArea.append(","+line);
-					        doorarray.add(line);
+					        l.add(line);
 					    }
+					doorarray.add(l);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -603,7 +709,7 @@ public class gui extends JPanel{
 	    public void startCode()
 		{
 			//Scanner sc = new Scanner(System.in);
-	        ArrayList<Integer> whileSet = new ArrayList<Integer>();
+	        whileSet = new ArrayList<Integer>();
 	        //ArrayList<Integer> lpkount = new ArrayList<Integer>();
 	        LineFile l1 = new LineFile();
 	        int i;
@@ -637,6 +743,18 @@ public class gui extends JPanel{
 				obj[i][1]= table2array.get(i).getLineaction();
 				obj[i][2]= table2array.get(i).getLineno();
 				obj[i][3]= null;
+			}
+			return obj;
+		}
+	    public Object[][] convertTable3Array(){
+			int len = scenarioList.size();
+			Object[][] obj = new Object[len][2];
+			int i=0;
+			for (i=0;i<len;i++){
+				System.out.println(scenarioList.get(i));
+				
+				obj[i][0]="Scenario no. "+(i+1)+":";
+				obj[i][1]=scenarioList.get(i);
 			}
 			return obj;
 		}
@@ -762,5 +880,76 @@ public class gui extends JPanel{
 	        }**/
 	        System.out.println("1THIS-> "+startNode);
 	        return startNode;
+	    }
+	    
+	    
+	    
+	    public void generateScenarios2(Node startNode, ArrayList<Integer> lpkount, ArrayList<Integer> whileSet)
+	    {
+	        String scenario = "";
+	        int temp2 = -1;
+	        Node cNode = startNode.getTrue_part();
+	        Stack<Node> newStack = new Stack<Node>();
+	        Stack<String> scenarioStack = new Stack<String>();
+	        //ArrayList<String> scenarioList = new ArrayList<String>();
+	        Stack<Integer> iflist = new Stack<Integer>();
+	        Stack<Integer> indexlist = new Stack<Integer>();
+	        while(true)
+	        {
+	            switch(cNode.getType())
+	            {
+	                case 1: scenario = scenario+ cNode.getNode_no()+",";
+	                        cNode = cNode.getTrue_part();
+	                        break;
+	                case 2: scenarioStack.push(scenario + cNode.getNode_no() +"(F),");
+	                        if (temp2!=-1){
+	                            iflist.push(lpkount.get(temp2));
+	                            indexlist.push(temp2);
+	                        }
+	                        scenario = scenario+ cNode.getNode_no()+"(T),";
+	                        newStack.push(cNode);
+	                        cNode = cNode.getTrue_part();
+	                        break;
+	                case 5:   
+	                        int i = whileSet.indexOf(cNode.getNode_no());
+	                        temp2 = i;
+	                        if(newStack.search(cNode) == -1)            //Node not there
+	                        {
+	                            scenarioStack.push(scenario + cNode.getNode_no() +"(F),");
+	                            newStack.push(cNode);
+	                            scenario = scenario+ cNode.getNode_no()+"(T),";
+	                            cNode = cNode.getTrue_part();
+	                        }
+	                        else if(lpkount.get(i) > 1)
+	                        {
+	                            scenario = scenario+ cNode.getNode_no()+"(T),";
+	                            cNode = cNode.getTrue_part();
+	                            lpkount.set(i, (lpkount.get(i)-1));
+	                        }
+	                        else
+	                        {
+	                            scenario = scenario+ cNode.getNode_no()+"(F),";
+	                            cNode = cNode.getElse_part();
+	                                   
+	                        }
+	                        break;
+	                case 3:
+	                case 4:
+	                case 6:    cNode = cNode.getTrue_part();
+	                        break;
+	                case 7: scenarioList.add(scenario);
+	                        if(scenarioStack.isEmpty())
+	                        return ;
+	                        else
+	                        {
+	                            scenario = scenarioStack.pop();
+	                            Node temp = newStack.pop();
+	                            cNode = temp.getElse_part();
+	                            if(!indexlist.isEmpty())
+	                                lpkount.set(indexlist.pop(), iflist.pop());
+	                           
+	                        }
+	            }
+	        }
 	    }
 	}
