@@ -169,12 +169,13 @@ class LineFile
     }
     public void errorCheck(JTextArea textArea)
     {
-    	Iterator<Line> itr = lines.iterator();
+    	Iterator<Line> itr = this.lines.iterator();
     	Stack<String> ifstack = new Stack<String>();
 		Stack<String> whilestack=new Stack<String>();
 		int check = 0;
     	String line;
     	while(itr.hasNext()){
+    		System.out.println("good");
 			line = itr.next().getLine_descrip();
 			if(line.contains("IF")&&!line.contains("END"))
 			{
@@ -230,6 +231,7 @@ class LineFile
 		}
 		else if(check==0)
 		{
+			System.out.println("good");
 			textArea.append("No errors \n");
 		}
     }
@@ -248,7 +250,7 @@ class Table1
 	private String actiono;
 	private int lineno;
 	private String actionname;
-	static int count=0;
+	static int count=1;
 	Table1(int lineno2,String actionname2,int flag){
 		this.setLineno(lineno2);
 		this.setActioname(actionname2);
@@ -285,9 +287,11 @@ class Table2{
 	static int count=1;
 	private int sno;
 	private int lineno;
+	private String actionno;
 	private String lineaction;
-	Table2(int lineno2,String lineaction2){
+	Table2(int lineno2,String actiono2,String lineaction2){
 		this.lineno=lineno2;
+		this.actionno=actiono2;
 		this.lineaction=lineaction2;
 		this.sno=count;
 		count++;
@@ -309,6 +313,12 @@ class Table2{
 	}
 	public void setSno(int sno) {
 		this.sno = sno;
+	}
+	public String getActionno() {
+		return actionno;
+	}
+	public void setActionno(String actionno) {
+		this.actionno = actionno;
 	}
 	
 }

@@ -54,6 +54,7 @@ public class gui extends JPanel{
 	//JTextArea table2text = new JTextArea();
 	ArrayList<Integer> whileSet;
 	ArrayList<String> scenarioList = new ArrayList<String>();
+	LineFile l1 = new LineFile();
 	//String test11= JOptionPane.showInputDialog("Enter directory containing files");
 	//File folder = new File(test11);
 	//File[] listOfFiles = folder.listFiles();
@@ -103,7 +104,7 @@ public class gui extends JPanel{
 	    jcomp6.setBounds (0, 50, 250, 25);
 	    jcomp7.setBounds(470, 50, 100, 25);
 	    checkformat.setBounds(600, 50, 200, 25);
-	    LineFile l1 = new LineFile();
+	    
 	    jcomp7.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent evt) {
 	        	JFileChooser chooser = new JFileChooser();	
@@ -162,13 +163,12 @@ public class gui extends JPanel{
 	            JFileChooser chooser = new JFileChooser();
 	            chooser.setCurrentDirectory(new java.io.File("."));
 	            chooser.setDialogTitle("Select Component Folder to process");
-	            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+	            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 	            chooser.setAcceptAllFileFilterUsed(false);
 	            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
 	            {
-	                System.out.println("getCurrentDirectory(): "+ chooser.getCurrentDirectory());
-	                jcomp12.setText("");
-	                listFilesForFolder(chooser.getCurrentDirectory(),jcomp12, OkTxt, jcomp9);
+	                System.out.println("getCurrentDirectory(): "+ chooser.getSelectedFile());
+	                listFilesForFolder(chooser.getSelectedFile(),jcomp12, OkTxt, jcomp9);
 	            }
 	           else 
 	           	{
@@ -366,6 +366,7 @@ public class gui extends JPanel{
 		Object[] columnNames = {"S No.",
 		        "Loop Action",
 		        "Loop Line No.",
+		        "Action No.",
 		        "No."};
 		obj2 = convertTable2Array();
 		Object[][] data = obj2;
@@ -435,7 +436,7 @@ public class gui extends JPanel{
 				ArrayList<Integer> lpkount = new ArrayList<Integer>(); 
 				for(int i = 0; i < whileSet.size(); i++)
 		        {
-		            lpkount.add(Integer.parseInt(table2.getModel().getValueAt(i,3).toString()));
+		            lpkount.add(Integer.parseInt(table2.getModel().getValueAt(i,4).toString()));
 		        }
 				generateScenarios2(startNode,lpkount,whileSet);
 				System.out.println("DOne till here");
@@ -669,7 +670,7 @@ public class gui extends JPanel{
 		        } 
 		        else 
 		        {
-		        	textArea_2.append(fileEntry.getName()+" : ");
+		        	textArea_2.append("Component: "+fileEntry.getName().substring(0, fileEntry.getName().lastIndexOf("."))+" : ");
 		        	dispFileContents(fileEntry.getAbsoluteFile(), textArea_2);
 		        }
 		    }
@@ -684,13 +685,14 @@ public class gui extends JPanel{
 			 {
 				 BufferedReader br = new BufferedReader(new FileReader (file));
 				 String         line = null;
-				 columnobj[countcol] = file.getName();
+				 columnobj[countcol] = file.getName().substring(0, file.getName().lastIndexOf("."));
 				 countcol++;
+				 textArea.append("States : ");
 				 try {
 					 ArrayList<String> l = new ArrayList<String>();
 					while ((line = br.readLine()) != null)
 					    {
-					        textArea.append(","+line);
+					        textArea.append(line+",");
 					        l.add(line);
 					    }
 					doorarray.add(l);
@@ -742,7 +744,8 @@ public class gui extends JPanel{
 				obj[i][0]= table2array.get(i).getSno();
 				obj[i][1]= table2array.get(i).getLineaction();
 				obj[i][2]= table2array.get(i).getLineno();
-				obj[i][3]= null;
+				obj[i][3]= table2array.get(i).getActionno();
+				obj[i][4]= null;
 			}
 			return obj;
 		}
@@ -819,7 +822,7 @@ public class gui extends JPanel{
 	                System.out.printf("here while \n");
 	                table1= new Table1(ln.getLineno(),"WHILE",1);
 	                table1array.add(table1);
-	                table2 = new Table2(ln.getLineno()+1,ln.getLine_descrip());
+	                table2 = new Table2(ln.getLineno()+1,table1.getActiono(),ln.getLine_descrip());
 	                table2array.add(table2);
 	            }
 	            else if (ln.getLine_descrip().startsWith("ENDWHILE")) {
