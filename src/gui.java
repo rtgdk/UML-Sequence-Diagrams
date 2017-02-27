@@ -36,7 +36,7 @@ public class gui extends JPanel{
 	String pc[]=new String[1000];
 	int count=0;
 	int countcol=0;
-	
+	long scenariogentime;
 	String sloop[]=new String[100];
 	int cloop=0;
 	String gnrits[]=new String[1000];
@@ -167,6 +167,7 @@ public class gui extends JPanel{
 	            chooser.setAcceptAllFileFilterUsed(false);
 	            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
 	            {
+	            	jcomp12.append("Selected Components\n");
 	                System.out.println("getCurrentDirectory(): "+ chooser.getSelectedFile());
 	                listFilesForFolder(chooser.getSelectedFile(),jcomp12, OkTxt, jcomp9);
 	            }
@@ -282,9 +283,16 @@ public class gui extends JPanel{
 		Object[][] data = obj3;
 		table2 = new JTable(data,columnNames);
 		JScrollPane scrollPane = new JScrollPane(table2);
-		scrollPane.setBounds(50,100,900,500);
+		scrollPane.setBounds(50,100,900,400);
 		add(scrollPane);
-		
+		JLabel scenariono = new JLabel();
+		scenariono.setText("No of Scenarios: " + scenarioList.size());
+		scenariono.setBounds(100, 550, 150, 25);
+		add(scenariono);
+		JLabel scenariotime = new JLabel();
+		scenariotime.setText("Time taken to generate scenarios " + scenariogentime + " milliseconds");
+		scenariotime.setBounds(100, 600, 250, 25);
+		add(scenariotime);
 		JButton proceed3 = new JButton("Proceed");
 		proceed3.setBounds(700, 650, 100, 25);
 		proceed3.setEnabled(true);
@@ -352,7 +360,6 @@ public class gui extends JPanel{
 	    j3.setBounds(280, 80, 400, 40);
 	    j3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 	    j3.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    JButton generatebutton = new JButton("Generate Action Sequences");
 	    JLabel jcomp199=new JLabel("Generate Action Sequences");
 		JLabel jcomp19=new JLabel("Time:");
 		JLabel jcomp19_1=new JLabel("Build Action Count Graph");
@@ -362,12 +369,11 @@ public class gui extends JPanel{
 		jcomp19_4.setBounds(550,100,80,20);	
 		JLabel loops = new JLabel("No. of Loops");
 		loops.setBounds(450,200,100,20);
-		
 		Object[] columnNames = {"S No.",
 		        "Loop Action",
 		        "Loop Line No.",
 		        "Action No.",
-		        "No."};
+		        "No. of times loop to repeat"};
 		obj2 = convertTable2Array();
 		Object[][] data = obj2;
 		table2 = new JTable(data,columnNames);
@@ -377,7 +383,6 @@ public class gui extends JPanel{
 		JButton okbutton = new JButton("OK");
 		okbutton.setBounds(10,600,100,25);
 		okbutton.setForeground(Color.red);
-		generatebutton.setBounds(350,150,270,20);
 		jcomp199.setBounds(400,40,800,15);
 		jcomp19.setBounds(300,75,80,30);
 		jcomp19_1.setBounds(350,75,200,20);
@@ -390,7 +395,6 @@ public class gui extends JPanel{
 		add(loops);
 		add(proceed2);
 		add(okbutton);
-		add(generatebutton);
 		add(jcomp199);
 		add(jcomp19);
 		add(jcomp19_1);
@@ -417,12 +421,8 @@ public class gui extends JPanel{
 	    add(j4);
 	    add(j6);
 	    add(j5);
-	    generatebutton.addActionListener(new ActionListener() { 
-	    	  public void actionPerformed(ActionEvent e) { 
-	    		  add(scrollPane);
-	    		  
-	    		  } 
-	    		} );
+	    add(scrollPane);
+	    
 	    okbutton.addActionListener(new ActionListener() { 
 	    	  public void actionPerformed(ActionEvent e) {    
 	    		  okbutton.setForeground(Color.green);
@@ -512,21 +512,21 @@ public class gui extends JPanel{
 	    //comboBox.setSelectedIndex(0);
 	    //add(table, BorderLayout.CENTER);
 	    JLabel timerlabel = new JLabel("Timer");
-	    JTextArea timertext = new JTextArea();
+	    JLabel timertext = new JLabel();
 	    JLabel timerlabel2 = new JLabel("Time taken");
-	    JTextArea timertext2 = new JTextArea();
+	    JLabel timertext2 = new JLabel();
 	    JButton oklabel = new JButton("OK");
 	    //oklabel.setBackground(Color.RED);
 	    oklabel.setForeground(Color.RED);
 	    JLabel jcomp199=new JLabel("Master Action Sequence Table");
 		timerlabel.setBounds(800, 20, 40, 30);
 		timerlabel2.setBounds(10, 600, 80, 30);
-		oklabel.setBounds(10,550,70,20);
+		oklabel.setBounds(460,550,70,20);
 		jcomp199.setBounds(350,80,800,15);
-		timertext.setBounds(840,20,50,30);
-		timertext2.setBounds(100,600,50,30);
+		timertext.setBounds(840,20,150,30);
+		timertext2.setBounds(100,600,150,30);
 		JButton proceed2 = new JButton("Proceed");
-		timertext.setEnabled(false);
+		//timertext.setEnabled(false);
 		proceed2.setBounds(700, 650, 100, 25);
 		proceed2.setEnabled(false);
 		add(proceed2);
@@ -568,7 +568,7 @@ public class gui extends JPanel{
 	            long start = System.currentTimeMillis();
 	            while(true){
 	                    long now=System.currentTimeMillis()-start;
-	                    timertext.setText(Long.toString(now));
+	                    timertext.setText(Long.toString(now)+" milliseconds");
 	                    //repaint();
 	                }  
 	      
@@ -670,7 +670,7 @@ public class gui extends JPanel{
 		        } 
 		        else 
 		        {
-		        	textArea_2.append("Component: "+fileEntry.getName().substring(0, fileEntry.getName().lastIndexOf("."))+" : ");
+		        	textArea_2.append("Component Name: "+fileEntry.getName().substring(0, fileEntry.getName().lastIndexOf("."))+" : ");
 		        	dispFileContents(fileEntry.getAbsoluteFile(), textArea_2);
 		        }
 		    }
@@ -687,7 +687,7 @@ public class gui extends JPanel{
 				 String         line = null;
 				 columnobj[countcol] = file.getName().substring(0, file.getName().lastIndexOf("."));
 				 countcol++;
-				 textArea.append("States : ");
+				 textArea.append("		States : ");
 				 try {
 					 ArrayList<String> l = new ArrayList<String>();
 					while ((line = br.readLine()) != null)
@@ -889,6 +889,7 @@ public class gui extends JPanel{
 	    
 	    public void generateScenarios2(Node startNode, ArrayList<Integer> lpkount, ArrayList<Integer> whileSet)
 	    {
+	    	long start = System.currentTimeMillis();
 	        String scenario = "";
 	        int temp2 = -1;
 	        Node cNode = startNode.getTrue_part();
@@ -941,8 +942,11 @@ public class gui extends JPanel{
 	                case 6:    cNode = cNode.getTrue_part();
 	                        break;
 	                case 7: scenarioList.add(scenario);
-	                        if(scenarioStack.isEmpty())
-	                        return ;
+	                        if(scenarioStack.isEmpty()){
+	                        	long end = System.currentTimeMillis();
+	                        	scenariogentime=end-start;
+	                        	return ;
+	                        }
 	                        else
 	                        {
 	                            scenario = scenarioStack.pop();
@@ -954,5 +958,6 @@ public class gui extends JPanel{
 	                        }
 	            }
 	        }
+	        
 	    }
 	}
