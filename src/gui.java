@@ -37,6 +37,7 @@ public class gui extends JPanel{
 	int count=0;
 	int countcol=0;
 	long scenariogentime;
+	long usecasegentime;
 	String sloop[]=new String[100];
 	int cloop=0;
 	String gnrits[]=new String[1000];
@@ -117,6 +118,7 @@ public class gui extends JPanel{
 	            	jcomp11.setText(chooser.getSelectedFile().getName());
 	            	jcomp8.setText("");
 	                f= chooser.getSelectedFile();
+	                l1.makeLines(f);
 	                l1.dispLines(f, jcomp8);
 	            } else {
 	                System.out.println("No Selection ");
@@ -129,6 +131,7 @@ public class gui extends JPanel{
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		    try {
 	    		    	jcomp8.append("\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+	    		    	
 	    		    	l1.errorCheck(jcomp8);
 	    		    	btnCompButton.setEnabled(true);
 					} catch (Exception e1) {
@@ -291,7 +294,7 @@ public class gui extends JPanel{
 		add(scenariono);
 		JLabel scenariotime = new JLabel();
 		scenariotime.setText("Time taken to generate scenarios " + scenariogentime + " milliseconds");
-		scenariotime.setBounds(100, 600, 250, 25);
+		scenariotime.setBounds(100, 600, 350, 25);
 		add(scenariotime);
 		JButton proceed3 = new JButton("Proceed");
 		proceed3.setBounds(700, 650, 100, 25);
@@ -340,8 +343,8 @@ public class gui extends JPanel{
 	    add (jcomp3);
 	    add (jcomp4);
 	    add (jcomp5);
-	    add(jcomp19_3);
-	    add(jcomp19_4);
+	   // add(jcomp19_3);
+	   // add(jcomp19_4);
 	    jcomp1.setBackground(null);
 		//jcomp2.setBackground(new Color(59, 89, 182));
 		JTextArea jcomp13=new JTextArea();
@@ -360,15 +363,12 @@ public class gui extends JPanel{
 	    j3.setBounds(280, 80, 400, 40);
 	    j3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 	    j3.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    JLabel jcomp199=new JLabel("Generate Action Sequences");
-		JLabel jcomp19=new JLabel("Time:");
-		JLabel jcomp19_1=new JLabel("Build Action Count Graph");
-		JLabel jcomp19_2=new JLabel("Build Action Sequences");
 		//JTextArea jcomp19_3=new JTextArea();
 		//JTextArea jcomp19_4=new JTextArea();
 		jcomp19_4.setBounds(550,100,80,20);	
-		JLabel loops = new JLabel("No. of Loops");
-		loops.setBounds(450,200,100,20);
+		JLabel loop = new JLabel("No. of loops");
+		loop.setBounds(300, 50, 150, 25);
+		add(loop);
 		Object[] columnNames = {"S No.",
 		        "Loop Action",
 		        "Loop Line No.",
@@ -378,33 +378,25 @@ public class gui extends JPanel{
 		Object[][] data = obj2;
 		table2 = new JTable(data,columnNames);
 		JScrollPane scrollPane = new JScrollPane(table2);
-		scrollPane.setBounds(10,250,900,300);
+		scrollPane.setBounds(10,100,900,300);
 		//add(scrollPane);
 		JButton okbutton = new JButton("OK");
-		okbutton.setBounds(10,600,100,25);
+		okbutton.setBounds(300,600,100,25);
 		okbutton.setForeground(Color.red);
-		jcomp199.setBounds(400,40,800,15);
 		jcomp19.setBounds(300,75,80,30);
-		jcomp19_1.setBounds(350,75,200,20);
-		jcomp19_2.setBounds(350,100,200,20);
 		//jcomp19_3.setBounds(550,75,80,20);
 		//jcomp19_4.setBounds(550,100,80,20);	
 		JButton proceed2 = new JButton("Proceed");
 		proceed2.setBounds(700, 650, 100, 25);
 		proceed2.setEnabled(false);
-		add(loops);
+		
 		add(proceed2);
 		add(okbutton);
-		add(jcomp199);
-		add(jcomp19);
-		add(jcomp19_1);
-		add(jcomp19_2);
-		
+		//add(jcomp19);
 		//add(jcomp19_4);
 		JTextArea jcomp16=new JTextArea();
 		JTextArea jcomp17=new JTextArea();
 		JTextArea jcomp18=new JTextArea();
-		
 		JScrollPane j4=new JScrollPane(jcomp16);
 		JScrollPane j5=new JScrollPane(jcomp17);
 		JScrollPane j6=new JScrollPane(jcomp18);
@@ -417,12 +409,10 @@ public class gui extends JPanel{
 	    //j6.setBounds(280, 80+(linecount*40), 400, 40);
 	    j6.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 	    j6.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
 	    add(j4);
 	    add(j6);
 	    add(j5);
 	    add(scrollPane);
-	    
 	    okbutton.addActionListener(new ActionListener() { 
 	    	  public void actionPerformed(ActionEvent e) {    
 	    		  okbutton.setForeground(Color.green);
@@ -438,7 +428,9 @@ public class gui extends JPanel{
 		        {
 		            lpkount.add(Integer.parseInt(table2.getModel().getValueAt(i,4).toString()));
 		        }
+				
 				generateScenarios2(startNode,lpkount,whileSet);
+				
 				System.out.println("DOne till here");
 	        	selectionButtonPressed5();
 	        	//table_1.set = new JTable(obj, columnNames);
@@ -475,25 +467,66 @@ public class gui extends JPanel{
 	    j3.setBounds(280, 80, 400, 40);
 	    j3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 	    j3.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	   
-	    Object[] columnNames = new Object[countcol];
-	    for (int i=0;i<countcol;i++){
-	    	columnNames[i]=columnobj[i];
-	    }
+	    JLabel jcomp19=new JLabel("Building Use Case Action Graph:");
+		JLabel jcomp19_1=new JLabel("Use Case Action Graph Build");
+		JLabel jcomp19_2=new JLabel("Time taken to build : " + usecasegentime + " milliseconds");
+		jcomp19.setBounds(300,50,200,30);
+		jcomp19_1.setBounds(300,75,200,20);
+		jcomp19_2.setBounds(300,100,300,20);
+		add(jcomp19);
+		add(jcomp19_1);
+		add(jcomp19_2);
+	    Object[] columnNames = {"Action No","Line No","Action Name"};
+	    
 	    Object[][] data = obj;
 	    JTable table = new JTable(data,columnNames);
-	    TableColumn sportColumn = table.getColumnModel().getColumn(3);
-	    TableColumn sportColumn2 = table.getColumnModel().getColumn(4);
+	    //TableColumn sportColumn = table.getColumnModel().getColumn(3);
+	   // TableColumn sportColumn2 = table.getColumnModel().getColumn(4);
 	    JComboBox comboBox = new JComboBox();
 	    System.out.println(doorarray.get(0).get(0));
+	    JComboBox[][] jcb=new JComboBox[doorarray.size()][1000];
+	    System.out.println(doorarray.size());
+	    System.out.println(doorarray.get(0).size());
+	    for (int i=0;i<doorarray.size();i++){
+	    	 for (int j=0;j<table1array.size();j++){
+	    		 jcb[i][j] = new JComboBox();
+	    		 System.out.println(doorarray.get(i).get(0)+"here"+j);
+	    		 for(int k=0;k<doorarray.get(i).size();k++){
+	    			 jcb[i][j].addItem(doorarray.get(i).get(k));
+	    			}
+	    		 final int j12=j;
+	    		 final int i12=i;
+	    		 jcb[i][j].addActionListener(new ActionListener() { 
+			    	  public void actionPerformed(ActionEvent e) { 
+			    		   for (int l=j12;l<table1array.size();l++){
+			    			   jcb[i12][l].setSelectedIndex(jcb[i12][j12].getSelectedIndex());
+			    		   }  
+			    		  } 
+			    		} );
+	    		 jcb[i][j].setBounds(510+100*i,170+16*j,100,table.getRowHeight());
+	    		 add(jcb[i][j]);
+	    	 }
+	    	 
+	    }
+	    for (int i=0;i<countcol;i++){
+	    	JLabel j =new JLabel(columnobj[i].toString());
+	    	j.setBounds(530+100*i,154,100,table.getRowHeight());
+	    	add(j);
+	    }
+	    System.out.println();
 	    for (int i=0;i<doorarray.get(0).size();i++){
 	    	comboBox.addItem(doorarray.get(0).get(i));
 	    	//comboBox.setSelectedIndex(0);
 	    }
+	    comboBox.addActionListener(new ActionListener() { 
+	    	  public void actionPerformed(ActionEvent e) { 
+	    		    comboBox.setSelectedIndex(0);
+	    		  } 
+	    		} );
 	    System.out.println(comboBox.getSelectedIndex()+comboBox.getSelectedItem().toString());
 	    comboBox.setSelectedIndex(0);
 	   // comboBox.setSelectedIndex(0);
-	    sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
+	    //sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
 	    //comboBox.setSelectedIndex(0);
 	    JComboBox comboBox2 = new JComboBox();
 	    System.out.println(doorarray.get(1).get(0));
@@ -504,10 +537,10 @@ public class gui extends JPanel{
 	    System.out.println(comboBox2.getSelectedIndex()+comboBox2.getSelectedItem().toString());
 	    comboBox.setSelectedIndex(0);
 	    //comboBox2.setSelectedIndex(2);
-	    sportColumn2.setCellEditor(new DefaultCellEditor(comboBox2));
+	    //sportColumn2.setCellEditor(new DefaultCellEditor(comboBox2));
 	    JScrollPane scrollPane = new JScrollPane(table);
 	    //comboBox.setSelectedIndex(0);
-	    scrollPane.setBounds(10,100,900,400);
+	    scrollPane.setBounds(10,150,500,400);
 	    add(scrollPane);
 	    //comboBox.setSelectedIndex(0);
 	    //add(table, BorderLayout.CENTER);
@@ -521,7 +554,7 @@ public class gui extends JPanel{
 	    JLabel jcomp199=new JLabel("Master Action Sequence Table");
 		timerlabel.setBounds(800, 20, 40, 30);
 		timerlabel2.setBounds(10, 600, 80, 30);
-		oklabel.setBounds(460,550,70,20);
+		oklabel.setBounds(460,580,70,20);
 		jcomp199.setBounds(350,80,800,15);
 		timertext.setBounds(840,20,150,30);
 		timertext2.setBounds(100,600,150,30);
@@ -535,7 +568,7 @@ public class gui extends JPanel{
 		add(timerlabel2);
 		add(timertext2);
 		add(oklabel);
-		add(jcomp199);
+		//add(jcomp199);
 		
 		JTextArea jcomp16=new JTextArea();
 		JTextArea jcomp17=new JTextArea();
@@ -658,10 +691,7 @@ public class gui extends JPanel{
 	    public void listFilesForFolder(File folder, JTextArea textArea_2, JTextPane okTxt, JButton btnProceed) 
 		{
 	    	columnobj = new Object[10];
-	    	columnobj[0] = "Action No";
-	    	columnobj[1] =  "Line No";
-	    	columnobj[2] = "Action Name";
-	    	countcol = 3;
+	    	countcol=0;
 		    for (final File fileEntry : folder.listFiles()) 
 		    {
 		        if (fileEntry.isDirectory()) 
@@ -681,12 +711,12 @@ public class gui extends JPanel{
 	    public void dispFileContents(File file, JTextArea textArea)
 		{	
 	    	
+	    	columnobj[countcol] = file.getName().substring(0, file.getName().lastIndexOf("."));
+	    	countcol++;
 			 try 
 			 {
 				 BufferedReader br = new BufferedReader(new FileReader (file));
 				 String         line = null;
-				 columnobj[countcol] = file.getName().substring(0, file.getName().lastIndexOf("."));
-				 countcol++;
 				 textArea.append("		States : ");
 				 try {
 					 ArrayList<String> l = new ArrayList<String>();
@@ -762,6 +792,7 @@ public class gui extends JPanel{
 			return obj;
 		}
 	    public Node createUseCaseGraph(ArrayList<Line> linf, ArrayList<Integer> whileSet) {
+	    	long start = System.currentTimeMillis();
 	        Node startNode = new Node(0,"Start",0);
 	        Node endNode = new Node(1000,"Start",20);
 	        endNode.setTrue_part(null);
@@ -881,6 +912,10 @@ public class gui extends JPanel{
 	        {
 	            System.out.println(itr.next());
 	        }**/
+	        long end = System.currentTimeMillis();
+        	//System.out.println(end);
+        	usecasegentime=end-start;
+        	//System.out.println(scenariogentime);
 	        System.out.println("1THIS-> "+startNode);
 	        return startNode;
 	    }
@@ -890,6 +925,7 @@ public class gui extends JPanel{
 	    public void generateScenarios2(Node startNode, ArrayList<Integer> lpkount, ArrayList<Integer> whileSet)
 	    {
 	    	long start = System.currentTimeMillis();
+	    	//System.out.println(start);
 	        String scenario = "";
 	        int temp2 = -1;
 	        Node cNode = startNode.getTrue_part();
@@ -944,7 +980,9 @@ public class gui extends JPanel{
 	                case 7: scenarioList.add(scenario);
 	                        if(scenarioStack.isEmpty()){
 	                        	long end = System.currentTimeMillis();
+	                        	//System.out.println(end);
 	                        	scenariogentime=end-start;
+	                        	//System.out.println(scenariogentime);
 	                        	return ;
 	                        }
 	                        else

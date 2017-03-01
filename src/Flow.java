@@ -169,7 +169,7 @@ class LineFile
     }
     public void errorCheck(JTextArea textArea)
     {
-    	Iterator<Line> itr = this.lines.iterator();
+    	Iterator<Line> itr = lines.iterator();
     	Stack<String> ifstack = new Stack<String>();
 		Stack<String> whilestack=new Stack<String>();
 		int check = 0;
