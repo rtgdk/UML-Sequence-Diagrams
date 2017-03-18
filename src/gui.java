@@ -16,10 +16,13 @@ public class gui extends JPanel{
 	private JButton jcomp4;
 	private JButton jcomp5;
 	private JButton jcomp7;
+	private JButton btn5;
 	Object[][] obj;
 	Object[][] obj2;
 	Object[][] obj3;
+	Object[][] obj4;
 	Object[] columnobj;
+	JComboBox[][] jcb;
 	private JLabel jcomp6;
 	private JTextArea jcomp8;
 	private JButton jcomp9;
@@ -68,6 +71,7 @@ public class gui extends JPanel{
 	    jcomp3 = new JButton ("Step-II");
 	    jcomp4 = new JButton ("Step-III");
 	    jcomp5 = new JButton ("Step-IV");
+	    btn5 = new JButton("Step-V");
 	    jcomp1 = new JButton ("Home");
 	    jcomp7 = new JButton ("Browse");
 	    jcomp6 = new JLabel ("Select Use-Case Description File");
@@ -87,12 +91,21 @@ public class gui extends JPanel{
 	    add (jcomp3);
 	    add (jcomp4);
 	    add (jcomp5);
+	    add(btn5);
 
 	    jcomp1.setBounds (0, 10, 100, 25);
 	    jcomp2.setBounds (125, 10, 100, 25);
 	    jcomp3.setBounds (250, 10, 100, 25);
 	    jcomp4.setBounds (375, 10, 100, 25);
 	    jcomp5.setBounds (500, 10, 100, 25);
+	    btn5.setBounds(625, 10, 100, 25);
+	    
+	    jcomp1.setBackground(Color.green);
+	    jcomp2.setEnabled(false);
+	    jcomp3.setEnabled(false);
+	    jcomp4.setEnabled(false);
+	    jcomp5.setEnabled(false);
+	    btn5.setEnabled(false);
 	    add (checkformat);
 	    //jcomp1.setBackground(new Color(59, 89, 182));
 		add (jcomp6);
@@ -191,7 +204,7 @@ public class gui extends JPanel{
 	        	System.out.println("thisherr\n");
 	        	obj = convertTable1Array();
 	        	for(int i=0;i<table1array.size();i++){
-	        		System.out.println(obj[i][0].toString()+"he;llo");
+	        		System.out.println(obj[i][0].toString()+"hello");
 	        	}
 	        	selectionButtonPressed3();
 	        	//table_1.set = new JTable(obj, columnNames);
@@ -244,11 +257,40 @@ public class gui extends JPanel{
 		removeAll();
 		revalidate();
 		repaint();
+		int height = 100;
+	    //scrollPane.getViewport().remove(table2);
 		add (jcomp1);
 	    add (jcomp2);
 	    add (jcomp3);
 	    add (jcomp4);
 	    add (jcomp5);
+	    
+
+	    jcomp4.setEnabled(true);
+	    
+		jcomp1.setBackground(null);
+		jcomp2.setBackground(null);
+		jcomp3.setBackground(null);
+		jcomp4.setBackground(Color.green);
+		jcomp5.setBackground(null);
+		btn5.setBackground(null);
+	    Object[] columnNames2 = {"Action No.","X","Y","Hazard State"};
+	    int len, len2, i;
+	    len = scenarioList.size();
+	    for(i = 0; i < len; i++)
+	    {
+	    	System.out.println("$$$: "+scenarioList.get(i));
+	    	StringTokenizer strg = new StringTokenizer(scenarioList.get(i), ",");
+	    	len2 = scenarioList.get(i).length();
+	    	System.out.println(strg.countTokens());
+		    obj4 = convertTable4Array(strg, len2);
+		    Object[][] data = obj4;
+		    JTable table3 = new JTable(data,columnNames2);
+		    scrollPane = new JScrollPane(table3);
+			scrollPane.setBounds(50,height,900,200);
+			add(scrollPane);
+			height+=200;
+	    }	    
 	}
 	public void selectionButtonPressed5(){
 		removeAll();
@@ -285,7 +327,7 @@ public class gui extends JPanel{
 	    
 		Object[][] data = obj3;
 		table2 = new JTable(data,columnNames);
-		JScrollPane scrollPane = new JScrollPane(table2);
+		scrollPane = new JScrollPane(table2);
 		scrollPane.setBounds(50,100,900,400);
 		add(scrollPane);
 		JLabel scenariono = new JLabel();
@@ -329,7 +371,8 @@ public class gui extends JPanel{
 	       {
 				//table2text.setText(table2.getModel().getValueAt(0,3).toString());
 				
-	        	selectionButtonPressed6();
+	        	System.out.println("Here!!!!!!!!");
+				selectionButtonPressed6();
 	        	//table_1.set = new JTable(obj, columnNames);
 	       }
 		});
@@ -343,6 +386,15 @@ public class gui extends JPanel{
 	    add (jcomp3);
 	    add (jcomp4);
 	    add (jcomp5);
+	    
+	    jcomp3.setEnabled(true);
+	    
+	    jcomp1.setBackground(null);
+		jcomp2.setBackground(null);
+		jcomp3.setBackground(Color.green);
+		jcomp4.setBackground(null);
+		jcomp5.setBackground(null);
+		btn5.setBackground(null);
 	   // add(jcomp19_3);
 	   // add(jcomp19_4);
 	    jcomp1.setBackground(null);
@@ -449,6 +501,18 @@ public class gui extends JPanel{
 	    add (jcomp4);
 	    add (jcomp5);
 	    
+	    jcomp2.setEnabled(true);
+	    
+		jcomp1.setBackground(null);
+		jcomp2.setBackground(Color.green);
+		jcomp3.setBackground(null);
+		jcomp4.setBackground(null);
+		jcomp5.setBackground(null);
+		btn5.setBackground(null);
+		
+	    JLabel s1lab1 = new JLabel("Generate Use Case Action State Mapping Graph");
+	    add(s1lab1);
+	    s1lab1.setBounds(220, 50, 500, 30);
 	    jcomp1.setBackground(null);
 		//jcomp2.setBackground(new Color(59, 89, 182));
 		JTextArea jcomp13=new JTextArea();
@@ -467,15 +531,21 @@ public class gui extends JPanel{
 	    j3.setBounds(280, 80, 400, 40);
 	    j3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 	    j3.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    JLabel s1lab2 = new JLabel("STEP I(a): Generate Use-Case Action Graph");
+	    add(s1lab2);
+	    s1lab2.setBounds(250,75,500,30);
 	    JLabel jcomp19=new JLabel("Building Use Case Action Graph:");
 		JLabel jcomp19_1=new JLabel("Use Case Action Graph Build");
 		JLabel jcomp19_2=new JLabel("Time taken to build : " + usecasegentime + " milliseconds");
-		jcomp19.setBounds(300,50,200,30);
-		jcomp19_1.setBounds(300,75,200,20);
-		jcomp19_2.setBounds(300,100,300,20);
+		jcomp19.setBounds(300,100,200,20);
+		jcomp19_1.setBounds(300,125,300,20);
+		jcomp19_2.setBounds(300,150,300,20);
 		add(jcomp19);
 		add(jcomp19_1);
 		add(jcomp19_2);
+		JLabel s1lab3 = new JLabel("STEP I(b): Map Use-Case Actions to Component state");
+	    //add(s1lab3);
+	   // s1lab3.setBounds(250,175,500,30);														//Shift beyond this
 	    Object[] columnNames = {"Action No","Line No","Action Name"};
 	    
 	    Object[][] data = obj;
@@ -484,13 +554,13 @@ public class gui extends JPanel{
 	   // TableColumn sportColumn2 = table.getColumnModel().getColumn(4);
 	    JComboBox comboBox = new JComboBox();
 	    System.out.println(doorarray.get(0).get(0));
-	    JComboBox[][] jcb=new JComboBox[doorarray.size()][1000];
-	    System.out.println(doorarray.size());
+	    jcb=new JComboBox[doorarray.size()][1000];
+	    System.out.println("FINE"+doorarray.size());
 	    System.out.println(doorarray.get(0).size());
 	    for (int i=0;i<doorarray.size();i++){
 	    	 for (int j=0;j<table1array.size();j++){
 	    		 jcb[i][j] = new JComboBox();
-	    		 System.out.println(doorarray.get(i).get(0)+"here"+j);
+	    		 System.out.println(doorarray.get(i).get(0)+"here$$"+j);
 	    		 for(int k=0;k<doorarray.get(i).size();k++){
 	    			 jcb[i][j].addItem(doorarray.get(i).get(k));
 	    			}
@@ -788,6 +858,82 @@ public class gui extends JPanel{
 				
 				obj[i][0]="Scenario no. "+(i+1)+":";
 				obj[i][1]=scenarioList.get(i);
+			}
+			return obj;
+		}
+	    public Object[][] convertTable4Array(StringTokenizer strg, int slen)
+	    {
+	    	int len = strg.countTokens();
+	    	Object[][] obj = new Object[len][4];
+			int i=0;
+			String str="";
+			String tempstr="";
+			String[] prev = new String[doorarray.size()];
+			while(i < prev.length)
+			{
+				System.out.println((String)("^^^^-> "+jcb[i][0].getSelectedItem().toString()));
+				prev[i] = (String)(jcb[i][0].getSelectedItem());
+				i++;
+			}
+			i=0;
+			while(strg.hasMoreTokens())
+			{
+				int j =0;
+				obj[i][0]=strg.nextToken();
+				obj[i][1]= jcb[0][i].getSelectedItem();
+				obj[i][2]= jcb[1][i].getSelectedItem();
+				System.out.println("Chuhhtiya");
+				//while(j < prev.length)
+				//{
+				//	System.out.println("In loop, iteration"+j);
+					if(!(prev[0].equalsIgnoreCase(obj[i][1].toString())))
+					{
+						tempstr = "X != "+obj[i][1].toString();
+						StringTokenizer s = new StringTokenizer(str,",");
+						str = tempstr+","+str;
+						while(s.hasMoreTokens())
+						{
+							str = str+","+s.nextToken()+" ^ "+tempstr;
+						}
+					}
+					if(!(prev[1].equalsIgnoreCase(obj[i][2].toString())))
+					{
+						tempstr = "Y != "+obj[i][1].toString();
+						StringTokenizer s = new StringTokenizer(str,",");
+						str = tempstr+","+str;
+						while(s.hasMoreTokens())
+						{
+							str = str+","+s.nextToken()+" ^ "+tempstr;
+						}
+					}
+					System.out.println("Str is: "+str);
+					obj[i][3]= str;
+					while(j < prev.length)
+					{
+						System.out.println((String)("^^^^-> "+jcb[j][i].getSelectedItem().toString()));
+						prev[j] = (String)(jcb[j][i].getSelectedItem());
+						j++;
+					}
+				//}
+				i++;
+			}
+			return obj;
+		}
+	    public Object[][] convertTable4Array2(StringTokenizer strg, int slen)		//If something goes wrong
+	    {
+	    	int len = strg.countTokens();
+	    	Object[][] obj = new Object[len][4];
+			int i=0;
+			String str="";
+			//String prev1 = (String)(arr1[0].getSelectedItem());
+			//String prev2 = (String)(arr2[0].getSelectedItem());
+			while(strg.hasMoreTokens())
+			{
+				obj[i][0]=strg.nextToken();
+				obj[i][1]="x"+(i+1);
+				obj[i][2]="y"+(i+1);
+				obj[i][3]=str;
+				i++;
 			}
 			return obj;
 		}
