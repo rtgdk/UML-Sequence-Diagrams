@@ -53,6 +53,7 @@ public class gui extends JPanel{
 	Node startNode;
 	ArrayList<Table1> table1array ;
 	ArrayList<Table2> table2array ;
+	ArrayList<Integer> table3array ;
 	ArrayList<ArrayList<String>> doorarray = new ArrayList<ArrayList<String>>();
 	JTable table2;
 	//JTextArea table2text = new JTextArea();
@@ -203,8 +204,8 @@ public class gui extends JPanel{
 	        	obj = new Object[table1array.size()][3];
 	        	System.out.println("thisherr\n");
 	        	obj = convertTable1Array();
-	        	for(int i=0;i<table1array.size();i++){
-	        		System.out.println(obj[i][0].toString()+"hello");
+	        	for(int i=0;i<table3array.size();i++){
+	        		System.out.println(table3array.get(i)+"Hello");
 	        	}
 	        	selectionButtonPressed3();
 	        	//table_1.set = new JTable(obj, columnNames);
@@ -951,6 +952,7 @@ public class gui extends JPanel{
 	        Table2 table2;
 	        table1array = new ArrayList<Table1>();
 	        table2array = new ArrayList<Table2>();
+	        table3array = new ArrayList<Integer>();
 	        while (li.hasNext()){
 	            Line ln = li.next();
 	            if (ln.getLine_descrip().startsWith("IF")) {
@@ -960,7 +962,7 @@ public class gui extends JPanel{
 	                currentNode = n;
 	                table1= new Table1(ln.getLineno(),"IF",1);
 	                table1array.add(table1);
-	                
+	                table3array.add(ln.getLineno());
 	            }
 	            else if (ln.getLine_descrip().startsWith("ELSE")) {
 	                Node n = new Node(ln.getLineno(),ln.getLine_descrip(),3);
@@ -1001,6 +1003,7 @@ public class gui extends JPanel{
 	                table1array.add(table1);
 	                table2 = new Table2(ln.getLineno()+1,table1.getActiono(),ln.getLine_descrip());
 	                table2array.add(table2);
+	                table3array.add(ln.getLineno());
 	            }
 	            else if (ln.getLine_descrip().startsWith("ENDWHILE")) {
 	                Node n = new Node(ln.getLineno(),ln.getLine_descrip(),6);
@@ -1025,6 +1028,7 @@ public class gui extends JPanel{
 	                    n.setTrue_part(endNode);
 	                    table1= new Table1(ln.getLineno(),"END",1);
 	                    table1array.add(table1);
+	                    table3array.add(ln.getLineno());
 	                }
 	                else {
 	                    System.out.print("Error5");
@@ -1050,6 +1054,7 @@ public class gui extends JPanel{
 	                table1= new Table1(ln.getLineno(),ln.getLine_descrip(),1);
 	                //System.out.println(table1.getActioname());
 	                table1array.add(table1);
+	                table3array.add(ln.getLineno());
 	                System.out.println(table1array.get(0).getActioname()+"here");
 	            }
 	        }
@@ -1145,3 +1150,4 @@ public class gui extends JPanel{
 	        
 	    }
 	}
+

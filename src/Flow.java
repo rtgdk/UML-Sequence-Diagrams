@@ -99,7 +99,7 @@ class LineFile
    
     public void makeLines(File f)
     {
-        int count = 0;
+        int count = 1;
         BufferedReader br;
         try {
             br = new BufferedReader(new FileReader(f));
@@ -323,6 +323,20 @@ class Table2{
 	
 }
 
+class Table3{
+	private int lineno;
+	Table3(int lineno2){
+		this.setLineno(lineno2);
+	}
+	public int getLineno() {
+		return lineno;
+	}
+	public void setLineno(int lineno) {
+		this.lineno = lineno;
+	}
+	
+}
+
 public class Flow
 {
    
@@ -349,7 +363,7 @@ public class Flow
         str = f.generateScenarios2(startNode, lpkount, whileSet);
         f.print(str,startNode);
     }**/
-    public Node createUseCaseGraph(ArrayList<Line> linf, ArrayList<Integer> whileSet, ArrayList<Table1> table1array) {
+    public Node createUseCaseGraph(ArrayList<Line> linf, ArrayList<Integer> whileSet, ArrayList<Table1> table1array,ArrayList<Table3> table3array ) {
         Node startNode = new Node(0,"Start",0);
         Node endNode = new Node(1000,"Start",20);
         endNode.setTrue_part(null);
@@ -359,6 +373,7 @@ public class Flow
         Stack<Node> whilestack = new Stack<Node>();
         Stack<Node> lastvisitstack = new Stack<Node>();
         Table1 table1;
+        Table3 table3;
         while (li.hasNext()){
             Line ln = li.next();
             if (ln.getLine_descrip().startsWith("IF")) {
@@ -368,7 +383,8 @@ public class Flow
                 currentNode = n;
                 table1= new Table1(ln.getLineno(),"IF",1);
                 table1array.add(table1);
-                
+                table3 = new Table3(ln.getLineno());
+                table3array.add(table3);
             }
             else if (ln.getLine_descrip().startsWith("ELSE")) {
                 Node n = new Node(ln.getLineno(),ln.getLine_descrip(),3);
