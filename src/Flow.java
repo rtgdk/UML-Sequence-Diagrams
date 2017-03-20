@@ -44,7 +44,7 @@ class Node
    
     Node(int node_no, String node_descrip,int type)
     {
-        this.setNode_no(node_no+1);
+        this.setNode_no(node_no);
         this.setNode_descrip(node_descrip);
         this.setType(type);
         this.true_part=null;
