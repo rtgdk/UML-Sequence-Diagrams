@@ -50,8 +50,10 @@ public class gui extends JPanel{
 	private JLabel timerlabel2;
 	private JLabel timertext2;
 	private JButton oklabel;
-	private JScrollPane scrollPane2;
-	private JTable table;
+	private JScrollPane scrollPanepanel ;
+	//private JScrollPane scrollPane2;
+	//private JTable table;
+	private JPanel panel;
 	//Step 2-1
 	private JTable table2;
 	private JLabel loop;
@@ -330,18 +332,7 @@ public class gui extends JPanel{
 		add(jcomp19_1);
 		add(jcomp19_2);
 		add(s1lab3);
-		for (int i=0;i<doorarray.size();i++){
-		    	 for (int j=0;j<table1array.size();j++){
-		    		 add(jcb[i][j]);
-		    	 }
-		    	 
-		    }
-		for (int i=0;i<countcol;i++){
-	    	JLabel j =new JLabel(columnobj[i].toString());
-	    	j.setBounds(530+100*i,204,100,table.getRowHeight());
-	    	add(j);
-	    }
-		add(scrollPane2);
+		add(scrollPanepanel);
 		add(proceed2);
 		add(timerlabel);
 		add(timertext);
@@ -738,10 +729,10 @@ public class gui extends JPanel{
 	    //scrollPanepanel.setBounds(10,200,800,400);
 	    //scrollPanepanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         //scrollPanepanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	    JPanel panel = new JPanel();
+	    panel = new JPanel();
 	    panel.setLayout(null);
 	    panel.setPreferredSize(new Dimension(columnobj.length*100+400,table1array.size()*16+100));
-	    JScrollPane scrollPanepanel = new JScrollPane(panel);
+	    scrollPanepanel = new JScrollPane(panel);
 	    scrollPanepanel.setBounds(10,200,900,400);
 	    scrollPanepanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPanepanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -1018,11 +1009,11 @@ public class gui extends JPanel{
 				System.out.println(scenarioList.get(i));
 				System.out.println(scenarioListA.get(i)+"lol");
 				obj[i][0]="Scenario no. "+(i+1)+":";
-				obj[i][1]=scenarioList.get(i);
+				obj[i][1]=scenarioListA.get(i);
 			}
 			return obj;
 		}
-	    public Object[][] convertTable4Array(StringTokenizer strg, StringTokenizer strgtemp, int slen, ArrayList<Integer> ln, Object CompName[], int countcol)
+	    /*public Object[][] convertTable4Array(StringTokenizer strg, StringTokenizer strgtemp, int slen, ArrayList<Integer> ln, Object CompName[], int countcol)
 	    {
 	    	int len = strg.countTokens();
 	    	Object[][] obj = new Object[len][countcol+2];
@@ -1092,40 +1083,74 @@ public class gui extends JPanel{
 				i++;
 			}
 			return obj;
-		}
+		}**/
 	    
-	    public Object[][] convertTable4Array2(StringTokenizer strg, int slen, ArrayList<Integer> ln)
+	    public Object[][] convertTable4Array(StringTokenizer strg, StringTokenizer strgtemp, int slen, ArrayList<Integer> ln, Object CompName[], int countcol)
 	    {
-	    	int len = strg.countTokens();
-	    	Object[][] obj = new Object[len][4];
+	    	int len = strgtemp.countTokens();
+	    	Object[][] obj = new Object[len][countcol+2];
+	    	Object objtemp;
+	    	int i1=0,j1=0;
+	    	String sg;
+	    	for (int i=0;i<doorarray.size();i++){
+	    		 String statetemp= (String)(jcb[i][0].getSelectedItem());
+	    		 String prev = (String)(jcb[i][0].getSelectedItem());
+		    	 for (int j=0;j<table1array.size();j++){
+		    		 if (table1array.get(j).getActioname()!=""){
+		    			 	objtemp = strgtemp.nextToken();
+			    			if(objtemp.toString().contains("("))
+			 				{
+			 					int index = objtemp.toString().indexOf("(");
+			 					sg = objtemp.toString().substring(0, index);
+			 				}
+			 				else
+			 				{
+			 					sg = objtemp.toString();
+			 				}
+				    		 if (prev==(String)(jcb[i][j].getSelectedItem())){
+				    			 obj[i1][j1+1] = statetemp;
+				    		 }
+				    		 else{
+				    			 objtem = strgtemp.;
+				    			 statetemp=(String)(jcb[i][j].getSelectedItem())+"-"+;
+				    			 obj[i1][j1+1] = statetemp;
+				    		 }
+				    		 prev = (String)(jcb[i][j].getSelectedItem());
+				    		 j1++;
+		    		 }
+		    		 
+		    	 }
+		    	 i1++;
+	    	}
+	    	for (int i=0;i<len;i++){
+	    		for (int j=0;j<countcol+2;j++){
+	    			System.out.print("jhand"+obj[i][j]);
+	    		}
+	    	}
 			int i=0;
 			int g = 0;
+			int x;
 			String sg ="";
 			String str="";
 			String tempstr="";
 			String[] prev = new String[doorarray.size()];
-			/*while(i < prev.length)
-			{
-				System.out.println((String)("^^^^-> "+jcb[i][0].getSelectedItem().toString()));
-				prev[i] = (String)(jcb[i][0].getSelectedItem());
-				i++;
-			}**/
 			i=0;
 			int k = -1, z = -1;
-			while(strg.hasMoreTokens())
+			while(strgtemp.hasMoreTokens())
 			{
 				int j =0;
-				obj[i][0]=strg.nextToken();
-				if(obj[i][0].toString().contains("("))
+				objtemp = strgtemp.nextToken();
+				obj[i][0]=objtemp;
+				if(objtemp.toString().contains("("))
 				{
 					int index;
-					System.out.println("With Bracket:"+obj[i][0].toString());
-					index = obj[i][0].toString().indexOf("(");
-					sg = obj[i][0].toString().substring(0, index);
+					System.out.println("With Bracket:"+objtemp.toString());
+					index = objtemp.toString().indexOf("(");
+					sg = objtemp.toString().substring(0, index);
 				}
 				else
 				{
-					sg = obj[i][0].toString();
+					sg = objtemp.toString();
 				}
 				for(g = 0; g < ln.size(); g++)
 				{
@@ -1135,8 +1160,6 @@ public class gui extends JPanel{
 						break;
 					}
 				}
-				obj[i][1]= jcb[0][k].getSelectedItem();
-				obj[i][2]= jcb[1][k].getSelectedItem();
 				if(z != -1)
 				{
 					while(j < prev.length)
@@ -1145,32 +1168,26 @@ public class gui extends JPanel{
 						prev[j] = (String)(jcb[j][z].getSelectedItem());
 						j++;
 					}
-					//while(j < prev.length)
-					//{
-					//	System.out.println("In loop, iteration"+j);
-						if(!(prev[0].equalsIgnoreCase(obj[i][1].toString())))
-						{
-							tempstr = "X != "+obj[i][1].toString();
-							StringTokenizer s = new StringTokenizer(str,",");
-							str = tempstr+","+str;
-							while(s.hasMoreTokens())
-							{
-								str = str+","+s.nextToken()+" ^ "+tempstr;
-							}
-						}
-						if(!(prev[1].equalsIgnoreCase(obj[i][2].toString())))
-						{
-							tempstr = "Y != "+obj[i][2].toString();
-							StringTokenizer s = new StringTokenizer(str,",");
-							str = tempstr+","+str;
-							while(s.hasMoreTokens())
-							{
-								str = str+","+s.nextToken()+" ^ "+tempstr;
-							}
-						}
 				}
-				System.out.println("Str is: "+str);
-				obj[i][3]= str;
+				for(x = 0; x < countcol; x++)
+				{
+					obj[i][x+1]= jcb[x][k].getSelectedItem();
+					if(z != -1)
+					{
+						if(!(prev[x].equalsIgnoreCase(obj[i][x+1].toString())))
+						{
+							tempstr = CompName[x].toString() + " = " +obj[i][x+1].toString();
+							StringTokenizer s = new StringTokenizer(str,",");
+							str = tempstr+","+str;
+							while(s.hasMoreTokens())
+							{
+								str = str+","+s.nextToken()+" ^ "+tempstr;
+							}
+						}
+					}
+				}
+				System.out.println("Str is: "+str+"val of x: "+(x+1));
+				obj[i][countcol+1]= str;
 				z = k;
 				i++;
 			}
@@ -1474,25 +1491,44 @@ public class gui extends JPanel{
             //ArrayList<String> scenarioList = new ArrayList<String>();
             Stack<Integer> iflist = new Stack<Integer>();
             Stack<Integer> indexlist = new Stack<Integer>();
+            int flag = 0;
+            String hyphen="";
+            ArrayList<Integer> lpkount2 = new ArrayList<Integer>();
+            for (int j=0;j<lpkount.size();j++){
+            	lpkount2.add(lpkount.get(j));
+            }
             while(true)
             {
                 switch(cNode.getType())
                 {
                     case 1: scenario = scenario+ cNode.getNode_no()+",";
-                            scenarioA = scenarioA+ "A"+cNode.getNode_no()+",";
+                    		if (flag==1){
+                    			int i=temp2;
+                    			Integer hyp = lpkount2.get(i)-lpkount.get(i);
+                    			hyphen = "-"+hyp.toString() ;		
+                    		}
+                            scenarioA = scenarioA+cNode.getNode_no()+hyphen+",";
+                            hyphen="";
                             cNode = cNode.getTrue_part();
                             break;
                     case 2: scenarioStack.push(scenario + cNode.getNode_no() +"(F),");
+		                    if (flag==1){
+		                    	int i=temp2;
+		            			Integer hyp = lpkount2.get(i)-lpkount.get(i);
+		            			hyphen = "-"+hyp.toString() ;		
+		                    }
                             if (temp2!=-1){
                                 iflist.push(lpkount.get(temp2));
                                 indexlist.push(temp2);
                             }
                             scenario = scenario+ cNode.getNode_no()+"(T),";
-                            scenarioA = scenarioA+ "A"+cNode.getNode_no()+"(T),";
+                            scenarioA = scenarioA+cNode.getNode_no()+"(T)"+hyphen+",";
+                            hyphen="";
                             newStack.push(cNode);
                             cNode = cNode.getTrue_part();
                             break;
                     case 5:  
+                    		flag = 1;
                             int i = whileSet.indexOf(cNode.getNode_no());
                             temp2 = i;
                             System.out.println(i+"hulaahulaa"+cNode.getNode_no()+"lula"+lpkount.get(i));
@@ -1501,14 +1537,22 @@ public class gui extends JPanel{
                                 scenarioStack.push(scenario + cNode.getNode_no() +"(F),");
                                 newStack.push(cNode);
                                 scenario = scenario+ cNode.getNode_no()+"(T),";
-                                scenarioA = scenarioA+ "A"+cNode.getNode_no()+"(T),";
+                                int i1=temp2;
+                                Integer hyp = lpkount2.get(i1)-lpkount.get(i1)+1;
+                    			hyphen = "-"+hyp.toString() ;
+                                scenarioA = scenarioA+ cNode.getNode_no()+"(T)"+hyphen+",";
+                                hyphen="";
                                 cNode = cNode.getTrue_part();
                                 lpkount.set(i, (lpkount.get(i)-1));
                             }
                             else if(lpkount.get(i) > 0)
                             {
                                 scenario = scenario+ cNode.getNode_no()+"(T),";
-                                scenarioA = scenarioA+ "A"+cNode.getNode_no()+"(T),";
+                                int i1=temp2;
+                                Integer hyp = lpkount2.get(i1)-lpkount.get(i1)+1;
+                    			hyphen = "-"+hyp.toString() ;
+                                scenarioA = scenarioA+cNode.getNode_no()+"(T)"+hyphen+",";
+                                hyphen="";
                                 cNode = cNode.getTrue_part();
                                 lpkount.set(i, (lpkount.get(i)-1));
                             }
@@ -1528,15 +1572,22 @@ public class gui extends JPanel{
                             		}
                             	}
                                 scenario = scenario+ cNode.getNode_no()+"(F),";
-                                scenarioA = scenarioA+ "A"+cNode.getNode_no()+"(F),";
+                                int i1=temp2;
+                                Integer hyp = lpkount2.get(i1)-lpkount.get(i1)+1;
+                    			hyphen = "-"+hyp.toString() ;
+                                scenarioA = scenarioA+cNode.getNode_no()+"(F)"+hyphen+",";
+                                hyphen="";
                                 cNode = cNode.getElse_part();
                                 
                                       
                             }
                             break;
-                    case 3:
-                    case 4:
-                    case 6:    cNode = cNode.getTrue_part();
+                    case 3: cNode = cNode.getTrue_part();
+                    		break;
+                    case 4: cNode = cNode.getTrue_part();
+            				break;
+                    case 6: cNode = cNode.getTrue_part();
+                    		flag=0;
                             break;
                     case 7: scenarioList.add(scenario);
                             scenarioListA.add(scenarioA);
