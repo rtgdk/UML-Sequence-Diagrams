@@ -8,6 +8,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
  
@@ -70,7 +71,11 @@ public class gui extends JPanel{
 	private JScrollPane scrollPane4;
 	// Step 3
 	private JLabel loop2;
+	//Step  4
+	private JScrollPane scrollPanepanel2;
+	private JPanel panel2;
 	//Other
+	private int atomiccomp[] = {0,0};
 	private File file;
 	private JTextArea jcomp12;
 	static int cout=0;
@@ -288,7 +293,7 @@ public class gui extends JPanel{
 	    jcomp5.addActionListener(new ActionListener() { 
 	    	  public void actionPerformed(ActionEvent e) { 
 	    		    try {
-	    		    	selectionButtonPressed6();
+	    		    	go6();
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -374,6 +379,19 @@ public class gui extends JPanel{
 		add(proceed3);
 		
 	}
+	public void go6(){
+		removeAll();
+		revalidate();
+		repaint();
+		add (jcomp1);
+	    add (jcomp2);
+	    add (jcomp3);
+	    add (jcomp4);
+	    add (jcomp5);
+	    add(loop2);
+	    add(scrollPanepanel2);
+		
+	}
 	public void selectionButtonPressed6(){
 		removeAll();
 		revalidate();
@@ -395,21 +413,22 @@ public class gui extends JPanel{
 		loop2.setBounds(300, 50, 500, 25);
 		add(loop2);
 		//Object CompName[] = columnobj;
-		Object[] columnNames2 = new Object[countcol+2];
-		columnNames2[0]="Action No.";
+		Object[] columnNames2 = new Object[countcol+3];
+		columnNames2[0]="Line No.";
 		for (int i=0; i< countcol; i++){
 			columnNames2[i+1] = columnobj[i];
 		}
-		columnNames2[countcol+1]="Hazard State";
+		columnNames2[countcol+1]="Atomic Hazard State";
+		columnNames2[countcol+2]="Composite Hazard State";
 	    //Object[] columnNames2 = {"Action No.","X","Y","Hazard State"};
 	    int len, len2, i;
 	    len = scenarioList.size();
-	    JPanel panel = new JPanel();
-	    panel.setLayout(new GridLayout(len,1));
-	    JScrollPane scrollPanepanel = new JScrollPane(panel);
-	    scrollPanepanel.setBounds(50,height,900,600);
-	    scrollPanepanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPanepanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+	    panel2= new JPanel();
+	    panel2.setLayout(new GridLayout(len,1));
+	    scrollPanepanel2 = new JScrollPane(panel2);
+	    scrollPanepanel2.setBounds(50,height,900,600);
+	    scrollPanepanel2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPanepanel2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	    for(i = 0; i < len; i++)
 	    {
 	    	System.out.println("$$$: "+scenarioList.get(i));
@@ -417,7 +436,7 @@ public class gui extends JPanel{
 	    	StringTokenizer strgtemp = new StringTokenizer(scenarioListA.get(i), ",");
 	    	len2 = scenarioList.get(i).length();
 	    	System.out.println(strg.countTokens());
-		    obj4 = convertTable4Array(strg, strgtemp, len2, table3array, columnobj, countcol);
+		    obj4 = convertTable4Array(strg, strgtemp, len2, table3array, columnobj, countcol,atomiccomp);
 		    Object[][] data = obj4;
 		    JTable table3 = new JTable(data,columnNames2){
 	            
@@ -436,10 +455,11 @@ public class gui extends JPanel{
 			scrollPane5.setBounds(50,height,900,200);
 			scrollPane5.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 	        scrollPane5.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-			panel.add(scrollPane5);
-			height+=200;
+	        scrollPane5.setBorder(BorderFactory.createTitledBorder ("Scenrario No:"+(i+1)+", No. of atomic states-"+ atomiccomp[0] +", No. of composite states-"+ atomiccomp[1]));
+			panel2.add(scrollPane5);
+			height += 200;
 	    }
-	    this.add(scrollPanepanel);
+	    add(scrollPanepanel2);
 	}
 	public void selectionButtonPressed5(){
 		removeAll();
@@ -480,7 +500,7 @@ public class gui extends JPanel{
 		loop2_2.setBounds(310, 100, 300, 25);
 		add(loop);
 		add(loop2_2);
-	    Object[] columnNames = {"S.no","Scenarios"};
+	    Object[] columnNames = {"S.no","Scenarios (Line no.)"};
 	    obj3 = convertTable3Array();
 	    
 		Object[][] data = obj3;
@@ -1085,112 +1105,140 @@ public class gui extends JPanel{
 			return obj;
 		}**/
 	    
-	    public Object[][] convertTable4Array(StringTokenizer strg, StringTokenizer strgtemp, int slen, ArrayList<Integer> ln, Object CompName[], int countcol)
+	    public Object[][] convertTable4Array(StringTokenizer strg, StringTokenizer strgtemp, int slen, ArrayList<Integer> ln, Object CompName[], int countcol , int[] atomiccomp)
 	    {
 	    	int len = strgtemp.countTokens();
-	    	Object[][] obj = new Object[len][countcol+2];
+	    	Object[][] obj = new Object[len][countcol+3];
 	    	Object objtemp;
-	    	int i1=0,j1=0;
-	    	String sg;
-	    	for (int i=0;i<doorarray.size();i++){
-	    		 String statetemp= (String)(jcb[i][0].getSelectedItem());
-	    		 String prev = (String)(jcb[i][0].getSelectedItem());
-		    	 for (int j=0;j<table1array.size();j++){
-		    		 if (table1array.get(j).getActioname()!=""){
-		    			 	objtemp = strgtemp.nextToken();
-			    			if(objtemp.toString().contains("("))
-			 				{
-			 					int index = objtemp.toString().indexOf("(");
-			 					sg = objtemp.toString().substring(0, index);
-			 				}
-			 				else
-			 				{
-			 					sg = objtemp.toString();
-			 				}
-				    		 if (prev==(String)(jcb[i][j].getSelectedItem())){
-				    			 obj[i1][j1+1] = statetemp;
-				    		 }
-				    		 else{
-				    			 objtem = strgtemp.;
-				    			 statetemp=(String)(jcb[i][j].getSelectedItem())+"-"+;
-				    			 obj[i1][j1+1] = statetemp;
-				    		 }
-				    		 prev = (String)(jcb[i][j].getSelectedItem());
-				    		 j1++;
-		    		 }
-		    		 
-		    	 }
-		    	 i1++;
-	    	}
-	    	for (int i=0;i<len;i++){
-	    		for (int j=0;j<countcol+2;j++){
-	    			System.out.print("jhand"+obj[i][j]);
-	    		}
-	    	}
-			int i=0;
 			int g = 0;
 			int x;
-			String sg ="";
+			int i = 0;
+			int NoAtomic = 0, NoComposite = 0;
 			String str="";
-			String tempstr="";
-			String[] prev = new String[doorarray.size()];
-			i=0;
-			int k = -1, z = -1;
-			while(strgtemp.hasMoreTokens())
+			String yu[] = new String[countcol];
+			String gh = "";
+			String tempstr1="";
+			String tempstr2="";
+			String prev2 = "";
+	    	Integer sg;
+	    	String prev = new String();
+	    	String p[] = new String[countcol];
+	    	String statetemp = new String();
+	    	ArrayList<ArrayList<Integer>> changestate = new ArrayList<ArrayList<Integer>>();
+    	    for (int k=0;k<doorarray.size();k++){
+    	    	ArrayList<Integer> demo = new ArrayList<Integer>();
+    	    	prev = (String)(jcb[k][0].getSelectedItem());
+  	    	    for (int j=0;j<table1array.size();j++){
+  	    		  if ((String)(jcb[k][j].getSelectedItem())!=prev){
+  	    			  demo.add(table1array.get(j).getLineno());
+  	    			  prev = (String)(jcb[k][j].getSelectedItem());
+  	    		  }
+  	    	    }
+  	    	    changestate.add(demo);
+    	    }
+    	    String[] prevarray = new String[doorarray.size()];
+    	    String[] statearray = new String[doorarray.size()];
+    	    for (int k=0 ; k<doorarray.size();k++){
+    	    	prevarray[k] = (String)(jcb[0][0].getSelectedItem());
+    	    	statearray=prevarray;
+    	    }
+	    	while(strgtemp.hasMoreTokens()){
+	    		 objtemp = strgtemp.nextToken();
+	    		 obj[i][0]=objtemp;
+	    		 if(objtemp.toString().contains("("))
+ 				 {
+ 					int index = objtemp.toString().indexOf("(");
+ 					sg = Integer.parseInt(objtemp.toString().substring(0, index));
+ 				 }
+ 				 else if (objtemp.toString().contains("-"))
+ 				 {
+ 					int index = objtemp.toString().indexOf("-");
+ 					sg = Integer.parseInt(objtemp.toString().substring(0, index));
+ 					
+ 				 }
+ 				 else {
+ 					sg = Integer.parseInt(objtemp.toString());
+ 				 }
+	    		 for (int k=0;k<changestate.size();k++){
+    				 if (changestate.get(k).contains(sg)){
+    					 	 String curr = (String)(jcb[k][sg-1].getSelectedItem());
+    					 	 if (objtemp.toString().contains("-")){
+    					 		int index = objtemp.toString().indexOf("-");
+    					 		curr = curr + objtemp.toString().substring(index);
+    					 	 }
+	    					 obj[i][k+1] = curr;
+	    					 prevarray[k] = curr;
+	    					 statearray[k] = curr;
+	    					 System.out.print("Elsa Jean"+k+"lol"+sg);
+    				 }
+    				 else{
+    					 obj[i][k+1] = statearray[k];
+    				 }
+	    		 }
+	    		 i++;
+		    		 
+	    	}
+	    	for (int k=0;k<len;k++){
+	    		for (int j=1;j<countcol+1;j++){
+	    			System.out.print("jhand"+obj[k][j]);
+	    		}
+	    	}			
+	    	for(i = 0; i < len; i++)
 			{
-				int j =0;
-				objtemp = strgtemp.nextToken();
-				obj[i][0]=objtemp;
-				if(objtemp.toString().contains("("))
+				prev2 = str;
+				obj[i][countcol+1] = "";
+	    		for(int j = 1; j <= countcol; j++)
 				{
-					int index;
-					System.out.println("With Bracket:"+objtemp.toString());
-					index = objtemp.toString().indexOf("(");
-					sg = objtemp.toString().substring(0, index);
-				}
-				else
-				{
-					sg = objtemp.toString();
-				}
-				for(g = 0; g < ln.size(); g++)
-				{
-					if(Integer.parseInt(sg) == ln.get(g))
+					if(i != 0)
 					{
-						k = ln.get(g)-1;
-						break;
-					}
-				}
-				if(z != -1)
-				{
-					while(j < prev.length)
-					{
-						System.out.println((String)("^^^^-> "+jcb[j][z].getSelectedItem().toString()));
-						prev[j] = (String)(jcb[j][z].getSelectedItem());
-						j++;
-					}
-				}
-				for(x = 0; x < countcol; x++)
-				{
-					obj[i][x+1]= jcb[x][k].getSelectedItem();
-					if(z != -1)
-					{
-						if(!(prev[x].equalsIgnoreCase(obj[i][x+1].toString())))
+						p[j-1] = yu[j-1];
+						yu[j-1] = obj[i][j].toString();
+						if(!(p[j-1].equalsIgnoreCase(yu[j-1])))
 						{
-							tempstr = CompName[x].toString() + " = " +obj[i][x+1].toString();
+							tempstr1 = CompName[j-1].toString() + " != " +yu[j-1];
+							obj[i][countcol+1] = tempstr1+" , "+obj[i][countcol+1];
+							NoAtomic++;
+							tempstr2 = CompName[j-1].toString() + " = " +yu[j-1];
+							System.out.println("i: "+i+"j: "+j+"prev"+p[j-1]+"yu "+yu[j-1]+"tempstr1 "+tempstr1+"tempstr2 "+tempstr2);
 							StringTokenizer s = new StringTokenizer(str,",");
-							str = tempstr+","+str;
+							str = tempstr1+","+str;
 							while(s.hasMoreTokens())
 							{
-								str = str+","+s.nextToken()+" ^ "+tempstr;
+								String t, newe;
+								t = s.nextToken();
+								newe = str+","+t+" ^ ";
+								System.out.print("Look here..prev2: "+prev2);
+								str = newe+tempstr1;
+								str = newe+tempstr2;
+								NoComposite +=2;
+								System.out.println(" str: "+str);
+								System.out.println("^^Str is: "+t);
 							}
 						}
 					}
+					else
+					{
+						yu[j-1] = obj[i][j].toString();
+						obj[i][countcol+1] = "";
+					}
+					System.out.println("YU IS: "+yu[j-1]);
 				}
-				System.out.println("Str is: "+str+"val of x: "+(x+1));
-				obj[i][countcol+1]= str;
-				z = k;
-				i++;
+				if(prev2.equalsIgnoreCase(str))
+				{
+					System.out.println("EVER HERE?");
+					obj[i][countcol+2]= "";
+				}
+				else
+				{
+					System.out.println("Hwing");
+					System.out.println("Str is: "+str);
+					obj[i][countcol+2]= str;
+				}
 			}
+	    	NoComposite += NoAtomic;			//INSERT HERE
+	    	atomiccomp[0]= NoAtomic;
+	    	atomiccomp[1]= NoComposite;
+	    	System.out.println("ALEXANDRA DADDARIO "+(NoAtomic)+"&&"+(NoComposite));
 			return obj;
 		}
 	    
