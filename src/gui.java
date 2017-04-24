@@ -1,6 +1,7 @@
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.TextAttribute;
 import java.util.*;
 
 import javax.swing.*;
@@ -102,6 +103,7 @@ public class gui extends JPanel{
 	File f ;
 	Node startNode;
 	ArrayList<Table1> table1array ;
+	ArrayList<Table1> table1array2 ;
 	ArrayList<Table2> table2array ;
 	ArrayList<Integer> table3array;
 	ArrayList<ArrayList<String>> doorarray = new ArrayList<ArrayList<String>>();
@@ -461,16 +463,22 @@ public class gui extends JPanel{
 		step4panel.setLayout(new GridLayout(Step4Total+100,1));
 		int k = atomicList.size();
 		////System.out.println("qwereeeeeeee");
+		Font font = new Font("Courier", Font.BOLD,14);
+		Map attributes = font.getAttributes();
+		attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
 		for(int j=0;j<k;j++){
-			JLabel scenario = new JLabel("Scenario No: "+ (j+1));
+			JLabel scenario = new JLabel("Scenario No: "+ (j+1),SwingConstants.LEFT);
+			scenario.setFont(font.deriveFont(attributes));
 			step4panel.add(scenario);
-			JLabel atomic = new JLabel("Atomic States");
+			JLabel atomic = new JLabel("Atomic States",SwingConstants.LEFT);
+			atomic.setFont(font.deriveFont(attributes));
 			step4panel.add(atomic);
 			for(int i=0;i<atomicList.get(j).size();i++){
 				JLabel atomic2 = new JLabel((i+1)+"."+atomicList.get(j).get(i));
 				step4panel.add(atomic2);
 			}
-			JLabel compo = new JLabel("Composite States");
+			JLabel compo = new JLabel("Composite States",SwingConstants.LEFT);
+			compo.setFont(font.deriveFont(attributes));
 			step4panel.add(compo);
 			for(int i=0;i<compoList.get(j).size();i++){
 				JLabel compo2 = new JLabel((i+1)+"."+compoList.get(j).get(i));
@@ -508,13 +516,14 @@ public class gui extends JPanel{
 		add(proceed4);
 		add(loop2);
 		//Object CompName[] = columnobj;
-		Object[] columnNames2 = new Object[countcol+3];
-		columnNames2[0]="Line No.";
+		Object[] columnNames2 = new Object[countcol+4];
+		columnNames2[0]="Action No.";
+		columnNames2[1]="Line No.";
 		for (int i=0; i< countcol; i++){
-			columnNames2[i+1] = columnobj[i];
+			columnNames2[i+2] = columnobj[i];
 		}
-		columnNames2[countcol+1]="Atomic Hazard State";
-		columnNames2[countcol+2]="Composite Hazard State";
+		columnNames2[countcol+2]="Atomic Hazard State";
+		columnNames2[countcol+3]="Composite Hazard State";
 	    //Object[] columnNames2 = {"Action No.","X","Y","Hazard State"};
 	    int len, len2, i;
 	    len = scenarioList.size();
@@ -1232,6 +1241,7 @@ public class gui extends JPanel{
 	    	String p[] = new String[countcol];
 	    	ArrayList<String> atomicList1 = new ArrayList<String>();
 	    	ArrayList<String> compoList1 = new ArrayList<String>();
+	    	ArrayList<String> actionname = new ArrayList<String>();
 	    	String statetemp = new String();
 	    	ArrayList<ArrayList<Integer>> changestate = new ArrayList<ArrayList<Integer>>();
     	    for (int k=0;k<doorarray.size();k++){
@@ -1268,6 +1278,11 @@ public class gui extends JPanel{
  				 else {
  					sg = Integer.parseInt(objtemp.toString());
  				 }
+	    		 int p1=0;
+	    		 while(table1array2.get(p1).getLineno()!=sg){
+    				p1=p1+1;
+	    		 }
+	    		 actionname.add(table1array2.get(p1).getActiono());
 	    		 for (int k=0;k<changestate.size();k++){
     				 if (changestate.get(k).contains(sg)){
     					 	 String curr = (String)(jcb[k][sg-1].getSelectedItem());
@@ -1371,7 +1386,14 @@ public class gui extends JPanel{
 	    	atomiccomp[1]= NoComposite;
 	    	Step4Total = Step4Total+NoAtomic+NoComposite;
 	    	//System.out.println("ALEXANDRA DADDARIO "+(NoAtomic)+"&&"+(NoComposite));
-			return obj;
+	    	Object[][] newobj = new Object[len][countcol+4];
+	    	for (i=0;i<len;i++){
+	    		newobj[i][0]=actionname.get(i);
+	    		for(int j=0;j<countcol+3;j++){
+	    			newobj[i][j+1]=obj[i][j];
+	    		}
+	    	}
+			return newobj;
 		}
 	    
 	    public Node createUseCaseGraph(ArrayList<Line> linf, ArrayList<Integer> whileSet) {
@@ -1387,6 +1409,7 @@ public class gui extends JPanel{
             Table1 table1;
             Table2 table2;
             table1array = new ArrayList<Table1>();
+            table1array2 = new ArrayList<Table1>();
             table2array = new ArrayList<Table2>();
             table3array = new ArrayList<Integer>();
             while (li.hasNext()){
@@ -1398,6 +1421,7 @@ public class gui extends JPanel{
                     currentNode = n;
                     table1= new Table1(ln.getLineno(),"IF",1);
                     table1array.add(table1);
+                    table1array2.add(table1);
                     table3array.add(ln.getLineno());
                 }
                 else if (ln.getLine_descrip().startsWith("ELSE")) {
@@ -1406,6 +1430,7 @@ public class gui extends JPanel{
                         ifstack.pop().setElse_part(n);
                         table1= new Table1(ln.getLineno(),"ELSE",0);
                         table1array.add(table1);
+                        table1array2.add(table1);
                     }
                    
                     else {
@@ -1421,6 +1446,7 @@ public class gui extends JPanel{
                     lastvisitstack.pop().setTrue_part(n);
                     table1= new Table1(ln.getLineno(),"ENDIF",0);
                     table1array.add(table1);
+                    table1array2.add(table1);
                     }
                     else {
                         //System.out.print("Error2");
@@ -1437,6 +1463,7 @@ public class gui extends JPanel{
                     //System.out.printf("here while \n");
                     table1= new Table1(ln.getLineno(),"WHILE",1);
                     table1array.add(table1);
+                    table1array2.add(table1);
                     table2 = new Table2(ln.getLineno(),table1.getActiono(),ln.getLine_descrip());
                     table2array.add(table2);
                     table3array.add(ln.getLineno());
@@ -1450,6 +1477,7 @@ public class gui extends JPanel{
                         currentNode = n;
                         table1= new Table1(ln.getLineno(),"ENDWHILE",0);
                         table1array.add(table1);
+                        table1array2.add(table1);
                     }
                     else {
                         //System.out.print("Error4");
@@ -1464,6 +1492,7 @@ public class gui extends JPanel{
                         n.setTrue_part(endNode);
                         table1= new Table1(ln.getLineno(),"END",1);
                         table1array.add(table1);
+                        table1array2.add(table1);
                         table3array.add(ln.getLineno());
                     }
                     else {
@@ -1482,6 +1511,7 @@ public class gui extends JPanel{
                     }
                     table1= new Table1(ln.getLineno(),"EXIT",1);
                     table1array.add(table1);
+                    table1array2.add(table1);
                 }
                 else {
                     Node n = new Node(ln.getLineno(),ln.getLine_descrip(),1);
@@ -1490,6 +1520,7 @@ public class gui extends JPanel{
                     table1= new Table1(ln.getLineno(),ln.getLine_descrip(),1);
                     ////System.out.println(table1.getActioname());
                     table1array.add(table1);
+                    table1array2.add(table1);
                     table3array.add(ln.getLineno());
                     //System.out.println(table1array.get(0).getActioname()+"here");
                 }
