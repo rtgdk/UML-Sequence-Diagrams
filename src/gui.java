@@ -1540,15 +1540,9 @@ public class gui extends JPanel{
                     }
                 }
                 else if (ln.getLine_descrip().startsWith("EXIT")) {
-                    if (currentNode.getType()==5){
-                        currentNode.setElse_part(endNode);
-                    }
-                    else if (currentNode.getType()==3){
-                        currentNode.setElse_part(endNode);
-                    }
-                    else {
-                        currentNode.setTrue_part(endNode);
-                    }
+                	Node n = new Node(ln.getLineno(),ln.getLine_descrip(),7);
+                    currentNode.setTrue_part(n);
+                    currentNode = n;
                     table1= new Table1(ln.getLineno(),"EXIT",1);
                     table1array.add(table1);
                     table1array2.add(table1);

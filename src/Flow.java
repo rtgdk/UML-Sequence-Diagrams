@@ -10,11 +10,13 @@ class Line
 {
     private int lineno;
     private String line_descrip;
+    private int flag = 0;
    
     Line()
     {
         setLineno(0);
         setLine_descrip("");
+        this.flag=0;
     }
 
     public String getLine_descrip() {
@@ -32,6 +34,14 @@ class Line
     public void setLineno(int lineno) {
         this.lineno = lineno;
     }
+
+	public int getFlag() {
+		return flag;
+	}
+
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
 }
    
 class Node
@@ -118,6 +128,9 @@ class LineFile
             {
                 //textArea.append(sentn+"\n");
             	s1 = sentn.toUpperCase();
+            	s1 = s1.trim();
+            	if(s1.isEmpty())
+            		continue;
             	//System.out.print(sentn);
             	if (s1.equals("END")){
             		continue;
@@ -135,7 +148,7 @@ class LineFile
             		ifstack.pop();
             		ifstack.push("0");
             		Line x = new Line();
-                    x.setLineno(count);
+                    x.setLineno(1);
                     x.setLine_descrip(s1);
                     lines.add(x);
                     count++;
@@ -144,10 +157,11 @@ class LineFile
             		String sif = ifstack.pop();
             		if(sif=="1") {
             			Line x = new Line();
-                        x.setLineno(count);
+                        x.setLineno(-1);
                         x.setLine_descrip("ELSE");
+                        //x.setFlag(1);
                         lines.add(x);
-                        count++;
+                        //count++;
                         Line x2 = new Line();
                         x2.setLineno(count);
                         x2.setLine_descrip(s1);
