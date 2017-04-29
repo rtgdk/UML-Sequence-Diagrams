@@ -9,8 +9,8 @@ import javax.swing.event.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
- 
+import javax.swing.table.TableModel; 
+
 public class gui extends JPanel{
 	private JButton jcomp1;
 	private JButton jcomp2;
@@ -195,7 +195,7 @@ public class gui extends JPanel{
 	            	jcomp11.setText(chooser.getSelectedFile().getName());
 	            	jcomp8.setText("");
 	                f= chooser.getSelectedFile();
-	                l1.makeLines(f);
+	                l1.makeLines(f);							// Lines made in LineFile stored in l1
 	                l1.dispLines(f, jcomp8);
 	            } else {
 	                //System.out.println("No Selection ");
@@ -209,7 +209,7 @@ public class gui extends JPanel{
 	    		    try {
 	    		    	jcomp8.append("\n------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
 	    		    	
-	    		    	l1.errorCheck(jcomp8);
+	    		    	l1.errorCheck(jcomp8);				//checking error
 	    		    	btnCompButton.setEnabled(true);
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -464,21 +464,21 @@ public class gui extends JPanel{
 		int k = atomicList.size();
 		////System.out.println("qwereeeeeeee");
 		Font font = new Font("Courier", Font.BOLD,14);
-		Map attributes = font.getAttributes();
-		attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+		//Map attributes = font.getAttributes();
+		//attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
 		for(int j=0;j<k;j++){
-			JLabel scenario = new JLabel("Scenario No: "+ (j+1),SwingConstants.LEFT);
-			scenario.setFont(font.deriveFont(attributes));
+			JLabel scenario = new JLabel("<html><u>Scenario No:</u></html> "+ (j+1),SwingConstants.LEFT);
+			//scenario.setFont(font.deriveFont(attributes));
 			step4panel.add(scenario);
-			JLabel atomic = new JLabel("Atomic States",SwingConstants.LEFT);
-			atomic.setFont(font.deriveFont(attributes));
+			JLabel atomic = new JLabel("<html><u>Atomic States</u></html>",SwingConstants.LEFT);
+			//atomic.setFont(font.deriveFont(attributes));
 			step4panel.add(atomic);
 			for(int i=0;i<atomicList.get(j).size();i++){
 				JLabel atomic2 = new JLabel((i+1)+"."+atomicList.get(j).get(i));
 				step4panel.add(atomic2);
 			}
-			JLabel compo = new JLabel("Composite States",SwingConstants.LEFT);
-			compo.setFont(font.deriveFont(attributes));
+			JLabel compo = new JLabel("<html><u>Composite States</u></html>",SwingConstants.LEFT);
+			//compo.setFont(font.deriveFont(attributes));
 			step4panel.add(compo);
 			for(int i=0;i<compoList.get(j).size();i++){
 				JLabel compo2 = new JLabel((i+1)+"."+compoList.get(j).get(i));
@@ -491,6 +491,17 @@ public class gui extends JPanel{
 	    step4scrollPanepanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	    add(step4scrollPanepanel);
 	}
+	
+	void deleteDir(File file) {
+	    File[] contents = file.listFiles();
+	    if (contents != null) {
+	        for (File f : contents) {
+	            deleteDir(f);
+	        }
+	    }
+	    file.delete();
+	}
+	
 	public void selectionButtonPressed6(){
 		removeAll();
 		revalidate();
@@ -533,17 +544,41 @@ public class gui extends JPanel{
 	    scrollPanepanel2.setBounds(50,height,900,600);
 	    scrollPanepanel2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPanepanel2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        //DIRECTORY CODE
+        String xr = System.getProperty("user.dir");
+        String xy = xr;
+        System.out.println("Working Directory = " +xr);
+        xr = xr + "\\ScenarioHazard";
+        xy = xy + "\\ScenarioTable";
+        File file = new File(xr);
+        deleteDir(file);
+        if (!file.exists()) {
+            if (file.mkdir()) {
+                System.out.println("Directory is created!");
+            } else {
+                System.out.println("Failed to create directory!");
+            }
+        }
+        File file2 = new File(xy);
+        deleteDir(file2);
+        if (!file2.exists()) {
+            if (file2.mkdir()) {
+                System.out.println("Directory2 is created!");
+            } else {
+                System.out.println("Failed to create directory!");
+            }
+        }
+        xr = xr+"\\ScenarioHazard";
+        xy = xy + "\\ScenarioTable";
 	    for(i = 0; i < len; i++)
 	    {
-	    	////System.out.println("$$$: "+scenarioList.get(i));
 	    	StringTokenizer strg = new StringTokenizer(scenarioList.get(i), ",");
 	    	StringTokenizer strgtemp = new StringTokenizer(scenarioListA.get(i), ",");
 	    	len2 = scenarioList.get(i).length();
 	    	//System.out.println(strg.countTokens());
-		    obj4 = convertTable4Array(strg, strgtemp, len2, table3array, columnobj, countcol,atomiccomp);
+		    obj4 = convertTable4Array(strg, strgtemp, len2, table3array, columnobj, countcol,atomiccomp, (i+1), xr, xy);
 		    Object[][] data = obj4;
 		    JTable table3 = new JTable(data,columnNames2){
-	            
 	            //Implement table cell tool tips.
 	            public String getToolTipText(MouseEvent e) {
 	                String tip = null;
@@ -1009,27 +1044,6 @@ public class gui extends JPanel{
 	        	//table_1.set = new JTable(obj, columnNames);
 	       }
 		});
-	    //add(j7);
-	    //add(j8);
-	    //jcomp16.append((aname[count-1]));
-		//jcomp17.append((line2.replace("null", "")));
-		//jcomp18.append((((pc[count-1].replace("null", ""))).replace(",,",",")).replace("-,",""));
-		//jcomp24.append(vst[cloud++-1][2]);
-		//linecount++;
-		//line2=in1.readLine();
-	
-	//add(jcomp19);
-	//jcomp19.setBounds(1050,650,150 , 25);
-	/*jcomp19.addActionListener(new ActionListener() { 
-    	  public void actionPerformed(ActionEvent e) { 
-    		    try {
-					selectionButtonPressed4();
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-    		  } 
-    		} );
-}catch(Exception e){}*/
 }
 
 	
@@ -1139,90 +1153,77 @@ public class gui extends JPanel{
 		}
 	    public Object[][] convertTable3Array(){
 			int len = scenarioList.size();
+			
+			String FILENAME = System.getProperty("user.dir");
+			FILENAME = FILENAME +"\\ScenariosGenerated";
+			File file = new File(FILENAME);
+			deleteDir(file);
+	        if (!file.exists()) {
+	            if (file.mkdir()) {
+	                System.out.println("Directory is created!");
+	            } else {
+	                System.out.println("Failed to create directory!");
+	            }
+	        }
+	        FILENAME = FILENAME + "\\ScenaioList.txt";
+			BufferedWriter bw = null;
+			FileWriter fw = null;
+			try {
+				fw = new FileWriter(FILENAME);
+				bw = new BufferedWriter(fw);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
 			Object[][] obj = new Object[len][2];
 			int i=0;
 			for (i=0;i<len;i++){
 				//System.out.println(scenarioList.get(i));
 				//System.out.println(scenarioListA.get(i)+"lol");
+				try{
+					bw.write("Scenario no. "+(i+1)+":"+scenarioListA.get(i));
+					bw.newLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} 
 				obj[i][0]="Scenario no. "+(i+1)+":";
 				obj[i][1]=scenarioListA.get(i);
 			}
-			return obj;
-		}
-	    /*public Object[][] convertTable4Array(StringTokenizer strg, StringTokenizer strgtemp, int slen, ArrayList<Integer> ln, Object CompName[], int countcol)
-	    {
-	    	int len = strg.countTokens();
-	    	Object[][] obj = new Object[len][countcol+2];
-	    	Object objtemp;
-			int i=0;
-			int g = 0;
-			int x;
-			String sg ="";
-			String str="";
-			String tempstr="";
-			String[] prev = new String[doorarray.size()];
-			i=0;
-			int k = -1, z = -1;
-			while(strg.hasMoreTokens())
-			{
-				int j =0;
-				obj[i][0]=strgtemp.nextToken();
-				objtemp = strg.nextToken();
-				if(objtemp.toString().contains("("))
-				{
-					int index;
-					//System.out.println("With Bracket:"+objtemp.toString());
-					index = objtemp.toString().indexOf("(");
-					sg = objtemp.toString().substring(0, index);
-				}
-				else
-				{
-					sg = objtemp.toString();
-				}
-				for(g = 0; g < ln.size(); g++)
-				{
-					if(Integer.parseInt(sg) == ln.get(g))
-					{
-						k = ln.get(g)-1;
-						break;
-					}
-				}
-				if(z != -1)
-				{
-					while(j < prev.length)
-					{
-						//System.out.println((String)("^^^^-> "+jcb[j][z].getSelectedItem().toString()));
-						prev[j] = (String)(jcb[j][z].getSelectedItem());
-						j++;
-					}
-				}
-				for(x = 0; x < countcol; x++)
-				{
-					obj[i][x+1]= jcb[x][k].getSelectedItem();
-					if(z != -1)
-					{
-						if(!(prev[x].equalsIgnoreCase(obj[i][x+1].toString())))
-						{
-							tempstr = CompName[x].toString() + " = " +obj[i][x+1].toString();
-							StringTokenizer s = new StringTokenizer(str,",");
-							str = tempstr+","+str;
-							while(s.hasMoreTokens())
-							{
-								str = str+","+s.nextToken()+" ^ "+tempstr;
-							}
-						}
-					}
-				}
-				//System.out.println("Str is: "+str+"val of x: "+(x+1));
-				obj[i][countcol+1]= str;
-				z = k;
-				i++;
+			try {
+
+				if (bw != null)
+					bw.close();
+
+				if (fw != null)
+					fw.close();
+
+			} catch (IOException ex) {
+
+				ex.printStackTrace();
+
 			}
 			return obj;
-		}**/
+		}
 	    
-	    public Object[][] convertTable4Array(StringTokenizer strg, StringTokenizer strgtemp, int slen, ArrayList<Integer> ln, Object CompName[], int countcol , int[] atomiccomp)
+	    public Object[][] convertTable4Array(StringTokenizer strg, StringTokenizer strgtemp, int slen, ArrayList<Integer> ln, Object CompName[], int countcol , int[] atomiccomp, int numb, String xr, String xy)
 	    {
+	        BufferedWriter bw = null;
+			FileWriter fw = null;
+		    try {
+				fw = new FileWriter(xr+numb+".txt");
+				bw = new BufferedWriter(fw);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		    
+		    BufferedWriter bw2 = null;
+			FileWriter fw2 = null;
+		    try {
+				fw2 = new FileWriter(xy+numb+".txt");
+				bw2 = new BufferedWriter(fw2);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    	
 	    	int len = strgtemp.countTokens();
 	    	Object[][] obj = new Object[len][countcol+3];
 	    	Object objtemp;
@@ -1241,7 +1242,7 @@ public class gui extends JPanel{
 	    	String p[] = new String[countcol];
 	    	ArrayList<String> atomicList1 = new ArrayList<String>();
 	    	ArrayList<String> compoList1 = new ArrayList<String>();
-	    	ArrayList<String> actionname = new ArrayList<String>();
+	    	ArrayList<String> actionName = new ArrayList<String>();
 	    	String statetemp = new String();
 	    	ArrayList<ArrayList<Integer>> changestate = new ArrayList<ArrayList<Integer>>();
     	    for (int k=0;k<doorarray.size();k++){
@@ -1282,7 +1283,7 @@ public class gui extends JPanel{
 	    		 while(table1array2.get(p1).getLineno()!=sg){
     				p1=p1+1;
 	    		 }
-	    		 actionname.add(table1array2.get(p1).getActiono());
+	    		 actionName.add(table1array2.get(p1).getActiono());
 	    		 for (int k=0;k<changestate.size();k++){
     				 if (changestate.get(k).contains(sg)){
     					 	 String curr = (String)(jcb[k][sg-1].getSelectedItem());
@@ -1293,7 +1294,6 @@ public class gui extends JPanel{
 	    					 obj[i][k+1] = curr;
 	    					 prevarray[k] = curr;
 	    					 statearray[k] = curr;
-	    					// //System.out.print("Elsa Jean"+k+"lol"+sg);
     				 }
     				 else{
     					 obj[i][k+1] = statearray[k];
@@ -1304,7 +1304,6 @@ public class gui extends JPanel{
 	    	}
 	    	for (int k=0;k<len;k++){
 	    		for (int j=1;j<countcol+1;j++){
-	    			////System.out.print("jhand"+obj[k][j]);
 	    		}
 	    	}			
 	    	for(i = 0; i < len; i++)
@@ -1324,7 +1323,6 @@ public class gui extends JPanel{
 							NoAtomic++;
 							tempstr2 = CompName[j-1].toString() + " = " +yu[j-1];
 							atomicList1.add(tempstr2);
-							////System.out.println("i: "+i+"j: "+j+"prev"+p[j-1]+"yu "+yu[j-1]+"tempstr1 "+tempstr1+"tempstr2 "+tempstr2);
 							StringTokenizer s = new StringTokenizer(str,",");
 							str = tempstr1+","+str;
 							while(s.hasMoreTokens())
@@ -1332,13 +1330,10 @@ public class gui extends JPanel{
 								String t, newe;
 								t = s.nextToken();
 								newe = str+","+t+" ^ ";
-								////System.out.print("Look here..prev2: "+prev2);
 								str = newe+tempstr1;
 								str = newe+tempstr2;
 								compoList1.add(str);
 								NoComposite +=2;
-								////System.out.println(" str: "+str);
-								////System.out.println("^^Str is: "+t);
 							}
 						}
 					}
@@ -1347,52 +1342,97 @@ public class gui extends JPanel{
 						yu[j-1] = obj[i][j].toString();
 						obj[i][countcol+1] = "";
 					}
-					////System.out.println("YU IS: "+yu[j-1]);
 				}
 				if(prev2.equalsIgnoreCase(str))
 				{
-					////System.out.println("EVER HERE?");
 					obj[i][countcol+2]= "";
 				}
 				else
 				{
-					////System.out.println("Hwing");
-					////System.out.println("Str is: "+str);
 					obj[i][countcol+2]= str;
 				}
 			}
-	    	NoComposite += NoAtomic;//INSERT HERE
-	    	
-	    	for(int ck = 0; ck < atomicList1.size(); ck++)
-	    	{
-	    		//System.out.println(atomicList1.get(ck));
-	    	}
-	    	/**
-	    	//System.out.println("**********************");
-	    	for(int ck = 0; ck < compoList.size(); ck++)
-	    	{
-	    		//System.out.println(compoList.get(ck));
-	    	}
-	    	*/
+	    	NoComposite += NoAtomic;
 	    	atomicList.add(atomicList1);
-	    	//System.out.println("size!!!! "+atomicList.get(0).size());
-	    	//System.out.println("size!!!! "+atomicList.get(0).get(0));
 	    	compoList.add(compoList1);
-	    	//atomicList1.clear();
-	    	//compoList1.clear();
-	    	//System.out.println("size!!!! "+atomicList.get(0).size());
-	    	//System.out.println("size!!!! "+atomicList.get(0).get(0));
 	    	atomiccomp[0]= NoAtomic;
 	    	atomiccomp[1]= NoComposite;
 	    	Step4Total = Step4Total+NoAtomic+NoComposite;
-	    	//System.out.println("ALEXANDRA DADDARIO "+(NoAtomic)+"&&"+(NoComposite));
 	    	Object[][] newobj = new Object[len][countcol+4];
 	    	for (i=0;i<len;i++){
-	    		newobj[i][0]=actionname.get(i);
+	    		newobj[i][0]=actionName.get(i);
+	    		if(obj[i][0].toString().contains("-"))
+				 {
+					int index = obj[i][0].toString().indexOf("-");
+					newobj[i][0] = newobj[i][0]+obj[i][0].toString().substring(index, obj[i][0].toString().length());
+				 }
+	    		//newobj[i][0]=actionName.get(i);
 	    		for(int j=0;j<countcol+3;j++){
 	    			newobj[i][j+1]=obj[i][j];
 	    		}
 	    	}
+	    	
+	    	for(int ix = 0; ix < len; ix++ )
+	    	{
+	    		for(int jx = 0; jx < (countcol+4); jx++)
+	    		{
+	    			try {
+						bw.write(newobj[ix][jx].toString()+"|$|");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	    		}
+	    		try {
+					bw.newLine();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	}
+	    	try {
+
+				if (bw != null)
+					bw.close();
+
+				if (fw != null)
+					fw.close();
+
+			} catch (IOException ex) {
+
+				ex.printStackTrace();
+
+			}
+	    	
+	    	for(int ix = 0; ix < len; ix++ )
+	    	{
+	    		for(int jx = 0; jx < (countcol+2); jx++)
+	    		{
+	    			try {
+						bw2.write(newobj[ix][jx].toString()+"|$|");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	    		}
+	    		try {
+					bw2.newLine();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	}
+	    	try {
+
+				if (bw2 != null)
+					bw2.close();
+
+				if (fw2 != null)
+					fw2.close();
+
+			} catch (IOException ex) {
+
+				ex.printStackTrace();
+
+			}
 			return newobj;
 		}
 	    
@@ -1532,6 +1572,9 @@ public class gui extends JPanel{
             }**/
             long end = System.currentTimeMillis();
             ////System.out.println(end);
+            for(int g=0;g<table1array.size();g++){
+            	System.out.println(table1array.get(g).getActioname());
+            }
             usecasegentime=end-start;
             ////System.out.println(scenariogentime);
             //System.out.println("1THIS-> "+startNode);
@@ -1801,7 +1844,7 @@ public class gui extends JPanel{
                     		flag=0;
                             break;
                     case 7: scenarioList.add(scenario);
-                            scenarioListA.add(scenarioA);
+                            scenarioListA.add(scenario);
                             if(scenarioStack.isEmpty()){
                                 long end = System.currentTimeMillis();
                                 ////System.out.println(end);
@@ -1823,3 +1866,4 @@ public class gui extends JPanel{
            
         }
 	}
+

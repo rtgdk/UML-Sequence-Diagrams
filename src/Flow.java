@@ -112,16 +112,71 @@ class LineFile
         try
         {
             String sentn, s1;
-            while ((sentn = br.readLine()) != null)
+            Stack<String> ifstack = new Stack<String>();
+            //Stack<String> ifstack = new Stack<String>();
+            while ((sentn = br.readLine()) != null )
             {
                 //textArea.append(sentn+"\n");
             	s1 = sentn.toUpperCase();
-                Line x = new Line();
-                x.setLineno(count);
-                x.setLine_descrip(s1);
-                lines.add(x);
-                count++;
+            	//System.out.print(sentn);
+            	if (s1.equals("END")){
+            		continue;
+            	}
+            	else if (s1.startsWith("IF")){
+            		ifstack.push("1");
+            		Line x = new Line();
+                    x.setLineno(count);
+                    x.setLine_descrip(s1);
+                    lines.add(x);
+                    count++;
+                    System.out.print("hee ;"+ifstack.peek());
+            	}
+            	else if (s1.startsWith("ELSE")){
+            		ifstack.pop();
+            		ifstack.push("0");
+            		Line x = new Line();
+                    x.setLineno(count);
+                    x.setLine_descrip(s1);
+                    lines.add(x);
+                    count++;
+            	}
+            	else if (s1.startsWith("ENDIF")){
+            		String sif = ifstack.pop();
+            		if(sif=="1") {
+            			Line x = new Line();
+                        x.setLineno(count);
+                        x.setLine_descrip("ELSE");
+                        lines.add(x);
+                        count++;
+                        Line x2 = new Line();
+                        x2.setLineno(count);
+                        x2.setLine_descrip(s1);
+                        lines.add(x2);
+                        count++;
+            		}
+            		else {
+            			Line x = new Line();
+                        x.setLineno(count);
+                        x.setLine_descrip(s1);
+                        lines.add(x);
+                        count++;
+            		}
+            	}
+            	else {
+            		
+                    Line x = new Line();
+                    x.setLineno(count);
+                    x.setLine_descrip(s1);
+                    lines.add(x);
+                    count++;
+            	}
+            		
             }
+            Line x = new Line();
+            x.setLineno(count);
+            x.setLine_descrip("END");
+            lines.add(x);
+            count++;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -177,15 +232,15 @@ class LineFile
     	while(itr.hasNext()){
     		System.out.println("good");
 			line = itr.next().getLine_descrip();
-			if(line.contains("IF")&&!line.contains("END"))
+			if(line.startsWith("IF"))
 			{
 				ifstack.push("if");
 				}
-			if(line.contains("WHILE")&&!line.contains("END"))
+			if(line.startsWith("WHILE"))
 			{
 				whilestack.push("while");
 			}
-			if(line.contains("ENDIF"))
+			if(line.startsWith("ENDIF"))
 			{
 				if(ifstack.empty())
 				{
@@ -195,7 +250,7 @@ class LineFile
 				else
 				 ifstack.pop();
 			}
-			if(line.contains("ENDWHILE"))
+			if(line.startsWith("ENDWHILE"))
 			{
 				if(whilestack.empty())
 				{
@@ -205,18 +260,22 @@ class LineFile
 				else
 				whilestack.pop();
 			}
-			if(line.contains("ELSE"))
+			if(line.startsWith("ELSE"))
 			{
 			    if(ifstack.empty())
 			    {
 			    	textArea.append("Else Without If in line\n");
 			    	check=1;
 			    }
+			    
 			}
-			if(line.contains("THEN")&&(!(line.contains("IF"))))
+			if(line.startsWith("THEN"))
 			{
+				if(ifstack.empty())
+			    {
 				textArea.append("Then without If in line\n");
 				check=1;
+			    }
 			}
 		}
 		if(!ifstack.empty())
@@ -395,7 +454,7 @@ public class Flow
                 }
                 
                 else {
-                    System.out.print("Error1");
+                    System.out.print("Error 1");
                 }
                 lastvisitstack.push(currentNode);
                 currentNode = n;
