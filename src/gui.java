@@ -1,3 +1,4 @@
+//latest code
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -79,6 +80,7 @@ public class gui extends JPanel{
 	//Step 5
 	private JLabel step4title;
 	private JPanel step4panel;
+	private JButton proceed5;
 	private JScrollPane step4scrollPanepanel;
 	//Other
 	private int Step4Total = 0;
@@ -116,6 +118,7 @@ public class gui extends JPanel{
 	ArrayList<String> scenarioListA = new ArrayList<String>();
 	//ArrayList<String> atomicList1 = new ArrayList<String>();
 	ArrayList<ArrayList<String>> atomicList = new ArrayList<ArrayList<String>>();
+	ArrayList<ArrayList<String>> actionList = new ArrayList<ArrayList<String>>();
 	//ArrayList<String> compoList1 = new ArrayList<String>();
 	ArrayList<ArrayList<String>> compoList = new ArrayList<ArrayList<String>>();
 	LineFile l1 = new LineFile();
@@ -434,8 +437,75 @@ public class gui extends JPanel{
 	    add (step4);
 	    add(step4title);
 	    add(step4scrollPanepanel);
+	    add(proceed5);
 		
 	}
+	public void selectionButtonPressed8()
+	{
+		String xr = System.getProperty("user.dir");
+        xr = xr + "\\FaultTrees";
+        File file = new File(xr);
+        deleteDir(file);
+        if (!file.exists()) {
+            if (file.mkdir()) {
+                System.out.println("Directory is created!");
+            } else {
+                System.out.println("Failed to create directory!");
+            }
+        }
+        xr = xr + "\\FaultTrees";
+		for(int i=0; i < actionList.size();i++){
+			for(int j=0; j < actionList.get(i).size();j++){
+				createAtomicXML(actionList.get(i).get(j),atomicList.get(i).get(j),i,j, xr); //pass action name
+			}
+		}
+	}
+	public void createAtomicXML(String action,String title,int scno, int actionno, String xr ){
+		BufferedWriter bw = null;
+		FileWriter fw = null;
+	    try {
+			fw = new FileWriter(xr+scno+" - "+actionno+".xml");
+			bw = new BufferedWriter(fw);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	ArrayList<String> event = new ArrayList<String>();
+    	event.add("<Fault Tree>");
+    	event.add("<Title>");
+    	event.add(title);
+    	event.add("</Title>");
+    	event.add("<Basic Event>");
+    	event.add("<Title>");
+    	event.add("!("+action+")");
+    	event.add("</Title>");
+    	event.add("</Basic Event>");
+    	event.add("</Fault Tree>");
+    	for ( int i=0; i< event.size() ;i++)
+    	{
+    		try {
+				bw.write(event.get(i));
+				bw.newLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	try {
+
+			if (bw != null)
+				bw.close();
+
+			if (fw != null)
+				fw.close();
+
+		} catch (IOException ex) {
+
+			ex.printStackTrace();
+
+		}
+    	//event.add(action);
+    	//event.a
+    }
 	public void selectionButtonPressed7(){
 		removeAll();
 		revalidate();
@@ -490,6 +560,20 @@ public class gui extends JPanel{
 	    step4scrollPanepanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 	    step4scrollPanepanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	    add(step4scrollPanepanel);
+	    proceed5 = new JButton("Proceed");
+	    proceed5.setBounds(600, 50, 100, 25);
+	    add(proceed5);
+	    proceed5.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent evt) 
+	       {
+				//table2text.setText(table2.getModel().getValueAt(0,3).toString());
+				
+	        	//System.out.println("Here!!!!!!!!");
+				selectionButtonPressed8();
+	        	//table_1.set = new JTable(obj, columnNames);
+	       }
+		});
 	}
 	
 	void deleteDir(File file) {
@@ -918,7 +1002,7 @@ public class gui extends JPanel{
 	    		 final int i12=i;
 	    		 jcb[i][j].addActionListener(new ActionListener() { 
 			    	  public void actionPerformed(ActionEvent e) { 
-			    		   for (int l=j12;l<table1array.size();l++){
+			    		   for (int l=j12;l<j12+2 && l<table1array.size();l++){
 			    			   jcb[i12][l].setSelectedIndex(jcb[i12][j12].getSelectedIndex());
 			    		   }  
 			    		  } 
@@ -1153,7 +1237,6 @@ public class gui extends JPanel{
 		}
 	    public Object[][] convertTable3Array(){
 			int len = scenarioList.size();
-			
 			String FILENAME = System.getProperty("user.dir");
 			FILENAME = FILENAME +"\\ScenariosGenerated";
 			File file = new File(FILENAME);
@@ -1203,7 +1286,6 @@ public class gui extends JPanel{
 			}
 			return obj;
 		}
-	    
 	    public Object[][] convertTable4Array(StringTokenizer strg, StringTokenizer strgtemp, int slen, ArrayList<Integer> ln, Object CompName[], int countcol , int[] atomiccomp, int numb, String xr, String xy)
 	    {
 	        BufferedWriter bw = null;
@@ -1240,6 +1322,7 @@ public class gui extends JPanel{
 	    	Integer sg;
 	    	String prev = new String();
 	    	String p[] = new String[countcol];
+	    	ArrayList<String> actionList1 = new ArrayList<String>();
 	    	ArrayList<String> atomicList1 = new ArrayList<String>();
 	    	ArrayList<String> compoList1 = new ArrayList<String>();
 	    	ArrayList<String> actionName = new ArrayList<String>();
@@ -1322,7 +1405,9 @@ public class gui extends JPanel{
 							obj[i][countcol+1] = tempstr1+" , "+obj[i][countcol+1];
 							NoAtomic++;
 							tempstr2 = CompName[j-1].toString() + " = " +yu[j-1];
-							atomicList1.add(tempstr2);
+							//System.out.println(actionName.get(i).toString());
+							actionList1.add(actionName.get(i).toString());
+							atomicList1.add(tempstr1);
 							StringTokenizer s = new StringTokenizer(str,",");
 							str = tempstr1+","+str;
 							while(s.hasMoreTokens())
@@ -1353,6 +1438,7 @@ public class gui extends JPanel{
 				}
 			}
 	    	NoComposite += NoAtomic;
+	    	actionList.add(actionList1);
 	    	atomicList.add(atomicList1);
 	    	compoList.add(compoList1);
 	    	atomiccomp[0]= NoAtomic;
